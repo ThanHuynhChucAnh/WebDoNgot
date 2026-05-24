@@ -1,0 +1,13 @@
+﻿@model WebDoNgot.Models.Category
+
+<h2>Thêm danh mục mới</h2>
+
+<form asp-action="Add" method="post">
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Tên danh mục</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-success">Lưu danh mục</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>

@@ -1,0 +1,63 @@
+﻿@model WebDoNgot.Models.Product
+@{
+    ViewData["Title"] = "Chi tiết sản phẩm";
+}
+
+<div class="container mt-5">
+    <div class="mb-4">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm shadow-sm">
+            Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="row g-4 bg-white p-4 rounded-3 shadow-sm border">
+        <div class="col-md-5">
+            <div class="border rounded-3 p-2 bg-light text-center mb-3 d-flex align-items-center justify-content-center" style="height: 350px; overflow: hidden;">
+                <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/no-image.png" : Model.ImageUrl)"
+                     alt="@Model.Name"
+                     class="img-fluid rounded"
+                     style="max-height: 100%; object-fit: contain;"
+                     onerror="this.onerror=null; this.src='/images/no-image.png';" />
+            </div>
+
+            @if (Model.ImageUrls != null && Model.ImageUrls.Any())
+            {
+                <div class="row g-2">
+                    @foreach (var imageUrl in Model.ImageUrls)
+                    {
+                        <div class="col-3">
+                            <div class="border rounded p-1 bg-light d-flex align-items-center justify-content-center" style="height: 70px; overflow: hidden;">
+                                <img src="@imageUrl" alt="Sub Image" class="img-fluid" style="max-height: 100%; object-fit: cover;" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="col-md-7 d-flex flex-column justify-content-between">
+            <div>
+                <h1 class="text-dark font-weight-bold mb-2">@Model.Name</h1>
+                <div class="mb-4">
+                    <span class="text-danger font-weight-bold fs-2">@Model.Price.ToString("#,##0") đ</span>
+                </div>
+                <hr />
+                <div class="mb-4">
+                    <h5 class="text-secondary font-weight-bold mb-2">Mô tả sản phẩm:</h5>
+                    <p class="text-muted lh-base" style="white-space: pre-line;">
+                        @(string.IsNullOrEmpty(Model.Description) ? "Sản phẩm này hiện chưa có mô tả chi tiết." : Model.Description)
+                    </p>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 pt-3 border-top">
+                <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-warning px-4 text-white shadow-sm">
+                    Chỉnh sửa
+                </a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger px-4 shadow-sm">
+                    Xóa
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
