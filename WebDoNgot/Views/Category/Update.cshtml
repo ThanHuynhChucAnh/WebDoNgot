@@ -1,15 +1,65 @@
 ﻿@model WebDoNgot.Models.Category
 
-<h2>Cập nhật danh mục</h2>
+@{
+    ViewData["Title"] = "Cập nhật danh mục";
+}
 
-<form asp-action="Update" method="post">
-    <input type="hidden" asp-for="Id" />
+<style>
+    :root {
+        --primary-bakery: #9E6B75;
+        --accent-pink: #FDF6F8;
+        --border-pink: #F3DFE3;
+        --text-dark: #4A3E41;
+        --bg-light: #FAF7F5;
+    }
 
-    <div class="mb-3">
-        <label asp-for="Name" class="form-label">Tên danh mục</label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+    body {
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+    }
+
+    .bakery-card {
+        background: white;
+        border: none;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(158, 107, 117, 0.04);
+        padding: 35px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .form-control-bakery {
+        background-color: var(--accent-pink);
+        border: 1px solid var(--border-pink);
+        border-radius: 12px;
+        padding: 12px 16px;
+    }
+
+        .form-control-bakery:focus {
+            background-color: white;
+            border-color: var(--primary-bakery);
+            box-shadow: 0 0 0 4px rgba(158, 107, 117, 0.15);
+        }
+</style>
+
+<div class="container py-5">
+    <div class="bakery-card">
+        <h2 class="mb-2" style="font-family: 'Playfair Display', serif; font-weight: 700; color: var(--text-dark);">Sửa Danh Mục</h2>
+        <p class="text-muted mb-4">Thay đổi thông tin phân loại danh mục sản phẩm hiện tại.</p>
+
+        <form asp-action="Update" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-4">
+                <label asp-for="Name" class="form-label fw-bold small text-secondary">Tên danh mục</label>
+                <input asp-for="Name" class="form-control form-control-bakery" />
+                <span asp-validation-for="Name" class="text-danger small"></span>
+            </div>
+
+            <div class="d-flex gap-3">
+                <a asp-action="Index" class="btn btn-outline-secondary w-50" style="border-radius: 12px; padding: 12px;">Hủy</a>
+                <button type="submit" class="btn w-50 text-white" style="background-color: var(--primary-bakery); border-radius: 12px; font-weight: 600;">Cập nhật</button>
+            </div>
+        </form>
     </div>
-    <button type="submit" class="btn btn-warning">Cập nhật</button>
-    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-</form>
+</div>

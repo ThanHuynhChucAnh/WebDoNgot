@@ -1,59 +1,145 @@
 ﻿@model WebDoNgot.Models.Product
+@using Microsoft.AspNetCore.Mvc.Rendering
 @{
     ViewData["Title"] = "Cập nhật sản phẩm";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 border rounded p-4 shadow-sm bg-light">
-            <h2 class="text-center mb-4 text-warning">Chỉnh sửa sản phẩm</h2>
+<style>
+    :root {
+        --primary-bakery: #9E6B75;
+        --accent-pink: #FDF6F8;
+        --border-pink: #F3DFE3;
+        --text-dark: #4A3E41;
+        --bg-light: #FAF7F5;
+    }
 
-            <form asp-action="Update" method="post" enctype="multipart/form-data">
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    body {
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+    }
 
-                <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="ImageUrl" />
+    .bakery-card {
+        background: white;
+        border: none;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(158, 107, 117, 0.04);
+        padding: 30px;
+    }
 
-                <div class="mb-3">
-                    <label asp-for="Name" class="form-label font-weight-bold">Tên sản phẩm</label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger small"></span>
-                </div>
+    .form-label-bakery {
+        font-weight: 600;
+        color: #7A6B6E;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
 
-                <div class="mb-3">
-                    <label asp-for="Price" class="form-label font-weight-bold">Giá bán (đ)</label>
-                    <input asp-for="Price" class="form-control" type="number" />
-                    <span asp-validation-for="Price" class="text-danger small"></span>
-                </div>
+    .form-control-bakery {
+        background-color: var(--accent-pink);
+        border: 1px solid var(--border-pink);
+        border-radius: 12px;
+        padding: 12px 16px;
+        color: var(--text-dark);
+        transition: all 0.3s;
+    }
 
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-label font-weight-bold">Mô tả sản phẩm</label>
-                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-                    <span asp-validation-for="Description" class="text-danger small"></span>
-                </div>
+        .form-control-bakery:focus {
+            background-color: white;
+            border-color: var(--primary-bakery);
+            box-shadow: 0 0 0 4px rgba(158, 107, 117, 0.15);
+        }
 
-                <div class="mb-4">
-                    <label class="form-label font-weight-bold d-block">Hình ảnh sản phẩm</label>
+    .preview-box {
+        border-radius: 20px;
+        overflow: hidden;
+        background-color: var(--accent-pink);
+    }
 
-                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
-                    {
-                        <div class="mb-3 text-center bg-white p-2 border rounded" style="max-width: 180px; margin: 0 auto;">
-                            <span class="text-muted small d-block mb-1">Ảnh hiện tại:</span>
-                            <img src="@Model.ImageUrl" alt="Current Image" class="img-thumbnail" style="max-height: 120px; object-fit: cover;" />
-                        </div>
-                    }
+    .btn-save {
+        background-color: var(--primary-bakery);
+        color: white;
+        border-radius: 12px;
+        padding: 12px;
+        font-weight: 600;
+        border: none;
+        width: 100%;
+    }
 
-                    <div class="input-group">
-                        <input type="file" name="imageUrl" class="form-control" accept="image/*" />
+        .btn-save:hover {
+            background-color: #855660;
+            color: white;
+        }
+</style>
+
+<div class="container py-5">
+    <div class="mb-4">
+        <span class="text-muted" style="font-size: 0.9rem;">Admin &rsaquo; Products &rsaquo; Sửa sản phẩm</span>
+        <h2 class="mt-2" style="font-family: 'Playfair Display', serif; font-weight: 700;">Chi tiết sản phẩm</h2>
+        <p class="text-muted">Refine your artisanal creations for the storefront.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-7">
+            <div class="bakery-card">
+                <form asp-action="Update" method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label-bakery">Tên sản phẩm</label>
+                        <input asp-for="Name" class="form-control form-control-bakery" placeholder="e.g. Raspberry Rose Macaron" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
                     </div>
-                    <span class="text-muted small">Để trống nếu bạn muốn giữ nguyên hình ảnh hiện tại.</span>
-                </div>
 
-                <div class="d-flex justify-content-between mt-4">
-                    <a asp-action="Index" class="btn btn-outline-secondary px-4">Hủy bỏ</a>
-                    <button type="submit" class="btn btn-warning px-4 text-white">Cập nhật</button>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label-bakery">Mô tả</label>
+                        <textarea asp-for="Description" class="form-control form-control-bakery" rows="4" placeholder="Describe the flavors, texture..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Price" class="form-label-bakery">Giá tiền ($)</label>
+                            <input asp-for="Price" class="form-control form-control-bakery" />
+                            <span asp-validation-for="Price" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CategoryId" class="form-label-bakery">Danh mục</label>
+                            <select asp-for="CategoryId" asp-items="@ViewBag.Categories" class="form-select form-control-bakery"></select>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="ImageUrl" class="form-label-bakery">Upload hình ảnh mới</label>
+                        <input type="file" asp-for="ImageUrl" class="form-control form-control-bakery" id="imageInput" />
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <a asp-action="Index" class="btn btn-outline-secondary w-50" style="border-radius: 12px; padding: 12px;">Hủy</a>
+                        <button type="submit" class="btn btn-save w-50 shadow-sm">Cập nhật</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="bakery-card h-100 d-flex flex-column">
+                <label class="form-label-bakery mb-3">Product Imagery</label>
+                <div class="preview-box flex-grow-1 d-flex align-items-center justify-content-center p-2">
+                    <img src="@Model.ImageUrl" alt="Product Image" id="previewImage" class="img-fluid" style="border-radius: 16px; object-fit: cover; width: 100%; max-height: 380px;" />
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('imageInput').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById("previewImage").src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>

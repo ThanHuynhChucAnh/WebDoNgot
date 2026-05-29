@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebDoNgot.Models;
 using WebDoNgot.Repositories;
+
 namespace WebDoNgot.Controllers
 {
     public class CategoryController : Controller
@@ -12,65 +13,74 @@ namespace WebDoNgot.Controllers
             _categoryRepository = categoryRepository;
         }
 
-        // 1. Hiển thị danh sách danh mục
-        public IActionResult Index()
+        // 1. HIỂN THỊ DANH SÁCH DANH MỤC
+        public async Task<IActionResult> Index()
         {
-            var categories = _categoryRepository.GetAll();
+            var categories = await _categoryRepository.GetAllAsync();
             return View(categories);
         }
 
-        // 2. Thêm danh mục (Form)
+        // 2. THÊM DANH MỤC (FORM GET)
         [HttpGet]
         public IActionResult Add()
         {
             return View();
         }
 
+        // XỬ LÝ THÊM DANH MỤC (POST)
         [HttpPost]
-        public IActionResult Add(Category category)
+        public async Task<IActionResult> Add(Category category)
         {
             if (ModelState.IsValid)
             {
-                _categoryRepository.Add(category);
-                return RedirectToAction("Index");
+                await _categoryRepository.AddAsync(category);
+                return RedirectToAction(nameof(Index));
             }
             return View(category);
         }
 
-        // 3. Cập nhật danh mục (Form)
+        // 3. CẬP NHẬT DANH MỤC (FORM GET)
         [HttpGet]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var category = _categoryRepository.GetById(id);
-            if (category == null) return NotFound();
-            return View(category);
-        }
-
-        [HttpPost]
-        public IActionResult Update(Category category)
-        {
-            if (ModelState.IsValid)
+            var category = await _categoryRepository.GetByIdAsync(id);
+            if (category == null)
             {
-                _categoryRepository.Update(category);
-                return RedirectToAction("Index");
+                return NotFound();
             }
             return View(category);
         }
 
-        // 4. Xóa danh mục
-        [HttpGet]
-        public IActionResult Delete(int id)
+        // XỬ LÝ CẬP NHẬT DANH MỤC (POST)
+        [HttpPost]
+        public async Task<IActionResult> Update(Category category)
         {
-            var category = _categoryRepository.GetById(id);
-            if (category == null) return NotFound();
+            if (ModelState.IsValid)
+            {
+                await _categoryRepository.UpdateAsync(category);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(category);
+        }
+
+        // 4. XÓA DANH MỤC (FORM XÁC NHẬN GET)
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var category = await _categoryRepository.GetByIdAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
             return View(category); // Hiển thị trang xác nhận xóa
         }
 
-        [HttpPost, ActionName("Delete")] // Đổi ActionName về "Delete"
-        public IActionResult DeleteConfirmed(int id)
+        // XỬ LÝ XÓA DANH MỤC (POST)
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            _categoryRepository.Delete(id);
-            return RedirectToAction("Index");
+            await _categoryRepository.DeleteAsync(id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

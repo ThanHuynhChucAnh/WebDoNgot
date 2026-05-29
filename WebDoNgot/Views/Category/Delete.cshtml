@@ -1,9 +1,23 @@
 ﻿@model WebDoNgot.Models.Category
 
-<h2>Bạn có chắc chắn muốn xóa danh mục "@Model.Name"?</h2>
+@{
+    ViewData["Title"] = "Xóa danh mục";
+}
 
-<form asp-action="Delete" method="post">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Xác nhận Xóa</button>
-    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-</form>
+<div class="container py-5">
+    <div class="card mx-auto border-0 shadow-sm p-4 text-center" style="max-width: 500px; border-radius: 24px; background: white;">
+        <div class="text-danger mb-3" style="font-size: 3.5rem;">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 class="fw-bold mb-2" style="color: #4A3E41;">Xác nhận xóa?</h3>
+        <p class="text-muted px-3">Bạn có chắc chắn muốn xóa vĩnh viễn danh mục <strong class="text-dark">"@Model.Name"</strong>? Hành động này không thể hoàn tác.</p>
+
+        <form asp-action="Delete" method="post" class="mt-4">
+            <input type="hidden" asp-for="Id" />
+            <div class="d-flex gap-2 justify-content-center">
+                <a asp-action="Index" class="btn btn-light px-4" style="border-radius: 12px; padding: 10px 24px; font-weight: 500;">Hủy bỏ</a>
+                <button type="submit" class="btn btn-danger px-4" style="border-radius: 12px; padding: 10px 24px; font-weight: 600; background-color: #C75A6B; border: none;">Đồng ý Xóa</button>
+            </div>
+        </form>
+    </div>
+</div>

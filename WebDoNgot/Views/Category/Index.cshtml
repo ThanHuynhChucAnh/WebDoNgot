@@ -1,98 +1,233 @@
 ﻿@model IEnumerable<WebDoNgot.Models.Category>
 
-<div class="container mt-4">
+@{
+    ViewData["Title"] = "Quản lý Danh mục";
+}
 
-    <!-- Thanh điều hướng -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-        <div>
-            <h2 class="fw-bold mb-1">📂 Danh mục sản phẩm</h2>
-            <p class="text-muted mb-0">
-                Quản lý danh sách danh mục trong hệ thống
-            </p>
+<style>
+    :root {
+        --primary-bakery: #9E6B75;
+        --primary-hover: #855660;
+        --accent-pink: #F7EBEF;
+        --active-pink-bg: #E8C5CC;
+        --text-dark: #4A3E41;
+        --bg-light: #FAF7F5;
+        --sidebar-text: #635759;
+        --btn-edit-bg: #EAE0E2;
+        --btn-delete-bg: #FCECEE;
+        --btn-delete-text: #C75A6B;
+    }
+
+    body {
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Cấu trúc Sidebar */
+    .sidebar {
+        background-color: #FAF7F5;
+        padding: 20px 10px;
+        min-height: calc(100vh - 60px);
+    }
+
+    .sidebar-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .sidebar-item a {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 20px;
+        color: var(--sidebar-text);
+        text-decoration: none;
+        font-weight: 500;
+        border-radius: 14px;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .sidebar-item a:hover {
+            background-color: rgba(158, 107, 117, 0.05);
+            color: var(--primary-bakery);
+        }
+
+    .sidebar-item.active a {
+        background-color: var(--accent-pink);
+        color: var(--primary-bakery);
+        font-weight: 600;
+    }
+
+    .sidebar-item i {
+        font-size: 1.1rem;
+        width: 20px;
+        text-align: center;
+    }
+
+    /* Nội dung chính */
+    .main-content {
+        background-color: #FAF7F5;
+        padding: 25px;
+    }
+
+    .page-header {
+        border-bottom: 2px solid var(--accent-pink);
+        padding-bottom: 15px;
+        margin-bottom: 30px;
+    }
+
+    .card-title-bakery {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .btn-bakery-primary {
+        background-color: var(--primary-bakery);
+        color: white;
+        border-radius: 20px;
+        padding: 10px 24px;
+        border: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+        .btn-bakery-primary:hover {
+            background-color: var(--primary-hover);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(158, 107, 117, 0.2);
+        }
+
+    /* Tinh chỉnh Bảng danh mục */
+    .bakery-table-card {
+        background: white;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(158, 107, 117, 0.03);
+        overflow: hidden;
+    }
+
+    .table thead {
+        background-color: var(--accent-pink);
+    }
+
+    .table th {
+        color: var(--primary-bakery);
+        font-weight: 600;
+        border: none;
+        padding: 16px;
+    }
+
+    .table td {
+        padding: 16px;
+        border-bottom: 1px solid var(--accent-pink);
+        color: var(--text-dark);
+    }
+
+    /* Nút hành động sửa xóa nhỏ gọn */
+    .btn-action {
+        padding: 6px 16px;
+        border-radius: 10px;
+        border: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-edit {
+        background-color: var(--btn-edit-bg);
+        color: var(--primary-bakery);
+    }
+
+        .btn-edit:hover {
+            background-color: var(--active-pink-bg);
+            color: var(--primary-hover);
+        }
+
+    .btn-delete {
+        background-color: var(--btn-delete-bg);
+        color: var(--btn-delete-text);
+    }
+
+        .btn-delete:hover {
+            background-color: #F7D4D9;
+            color: #A53B4C;
+        }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3 col-lg-2 sidebar border-end">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a asp-controller="Product" asp-action="Index"><i class="fa-solid fa-chart-pie"></i> Sản phẩm</a>
+                </li>
+                <li class="sidebar-item active">
+                    <a asp-controller="Category" asp-action="Index"><i class="fa-solid fa-box"></i> Danh mục</a>
+                </li>
+            </ul>
         </div>
 
-        <div class="d-flex gap-2">
+        <div class="col-md-9 col-lg-10 main-content">
+            <div class="d-flex justify-content-between align-items-center page-header">
+                <div>
+                    <h2 class="card-title-bakery m-0">Danh mục sản phẩm</h2>
+                    <p class="text-muted m-0 mt-1" style="font-size: 0.9rem;">Phân loại cấu trúc menu các nhóm bánh ngọt của hệ thống.</p>
+                </div>
+                <a asp-action="Add" class="btn btn-bakery-primary shadow-sm">
+                    <i class="fa-solid fa-plus"></i> Thêm danh mục
+                </a>
+            </div>
 
-            <!-- Quay lại sản phẩm -->
-            <a asp-controller="Product"
-               asp-action="Index"
-               class="btn btn-outline-secondary rounded-pill px-4">
-
-                <i class="bi bi-arrow-left-circle me-2"></i>
-                Danh sách sản phẩm
-            </a>
-
-            <!-- Thêm danh mục -->
-            <a asp-action="Add"
-               class="btn btn-primary rounded-pill px-4">
-
-                <i class="bi bi-plus-circle me-2"></i>
-                Thêm danh mục
-            </a>
-
+            <div class="card bakery-table-card">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4" style="width: 15%;">Mã ID</th>
+                                <th style="width: 55%;">Tên danh mục nhóm bánh</th>
+                                <th class="text-center" style="width: 30%;">Hành động xử lý</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold text-muted">@item.Id</td>
+                                    <td class="fw-semibold">@item.Name</td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a asp-action="Update" asp-route-id="@item.Id" class="btn-action btn-edit">
+                                                <i class="fa-solid fa-pen-to-square"></i> Sửa
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action btn-delete">
+                                                <i class="fa-solid fa-trash-can"></i> Xóa
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-
     </div>
-
-    <!-- Bảng -->
-    <div class="card border-0 shadow-sm rounded-4">
-
-        <div class="card-body p-0">
-
-            <table class="table table-hover align-middle mb-0">
-
-                <thead class="table-light">
-                    <tr>
-                        <th class="ps-4">ID</th>
-                        <th>Tên danh mục</th>
-                        <th class="text-center">Hành động</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-
-                            <td class="ps-4 fw-bold text-muted">
-                                @item.Id
-                            </td>
-
-                            <td>
-                                @item.Name
-                            </td>
-
-                            <td class="text-center">
-
-                                <a asp-action="Update"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-warning rounded-pill px-3">
-
-                                    <i class="bi bi-pencil-square"></i>
-                                    Sửa
-                                </a>
-
-                                <a asp-action="Delete"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-danger rounded-pill px-3">
-
-                                    <i class="bi bi-trash"></i>
-                                    Xóa
-                                </a>
-
-                            </td>
-
-                        </tr>
-                    }
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
 </div>

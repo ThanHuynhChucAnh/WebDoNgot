@@ -1,50 +1,150 @@
 ﻿@model WebDoNgot.Models.Product
 @using Microsoft.AspNetCore.Mvc.Rendering
 @{
-    ViewData["Title"] = "Add Product";
+    ViewData["Title"] = "Thêm sản phẩm mới";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 border rounded p-4 shadow-sm bg-light">
-            <h2 class="text-center mb-4 text-primary">Thêm sản phẩm mới</h2>
+<style>
+    :root {
+        --primary-bakery: #9E6B75;
+        --accent-pink: #FDF6F8;
+        --border-pink: #F3DFE3;
+        --text-dark: #4A3E41;
+        --bg-light: #FAF7F5;
+    }
 
-            <form asp-action="Add" enctype="multipart/form-data" method="post">
-                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    body {
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+    }
 
-                <div class="mb-3">
-                    <label asp-for="Name" class="form-label font-weight-bold">Tên sản phẩm</label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger small"></span>
+    .bakery-card {
+        background: white;
+        border: none;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(158, 107, 117, 0.04);
+        padding: 30px;
+    }
+
+    .form-label-bakery {
+        font-weight: 600;
+        color: #7A6B6E;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+
+    .form-control-bakery {
+        background-color: var(--accent-pink);
+        border: 1px solid var(--border-pink);
+        border-radius: 12px;
+        padding: 12px 16px;
+        transition: all 0.3s;
+    }
+
+    .form-control-bakery:focus {
+        background-color: white;
+        border-color: var(--primary-bakery);
+        box-shadow: 0 0 0 4px rgba(158, 107, 117, 0.15);
+    }
+
+    .preview-box {
+        border-radius: 20px;
+        overflow: hidden;
+        background-color: var(--accent-pink);
+        min-height: 250px;
+        border: 2px dashed var(--border-pink);
+    }
+
+    .btn-save {
+        background-color: var(--primary-bakery);
+        color: white;
+        border-radius: 12px;
+        padding: 12px;
+        font-weight: 600;
+        border: none;
+    }
+
+    .btn-save:hover {
+        background-color: #855660;
+        color: white;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="mb-4">
+        <span class="text-muted" style="font-size: 0.9rem;">Quản trị &rsaquo; Sản phẩm &rsaquo; Thêm sản phẩm</span>
+        <h2 class="mt-2" style="font-family: 'Playfair Display', serif; font-weight: 700;">Tác phẩm mới</h2>
+        <p class="text-muted">Giới thiệu một kiệt tác bánh ngọt mới vào thực đơn của bạn.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-7">
+            <div class="bakery-card">
+                <form asp-action="Add" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label-bakery">Tên sản phẩm</label>
+                        <input asp-for="Name" class="form-control form-control-bakery" placeholder="" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label-bakery">Mô tả sản phẩm</label>
+                        <textarea asp-for="Description" class="form-control form-control-bakery" rows="4" placeholder=""></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Price" class="form-label-bakery">Giá tiền (đ)</label>
+                            <input asp-for="Price" class="form-control form-control-bakery" placeholder="0.00" />
+                            <span asp-validation-for="Price" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CategoryId" class="form-label-bakery">Danh mục</label>
+                            <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select form-control-bakery"></select>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="ImageUrl" class="form-label-bakery">Hình ảnh sản phẩm</label>
+                        <input type="file" asp-for="ImageUrl" class="form-control form-control-bakery" id="imageInput" required />
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <a asp-action="Index" class="btn btn-outline-secondary w-50" style="border-radius: 12px; padding: 12px;">Quay lại</a>
+                        <button type="submit" class="btn btn-save w-50 shadow-sm">Lưu & Xuất bản</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="bakery-card h-100 d-flex flex-column">
+                <label class="form-label-bakery mb-3">Xem trước hình ảnh</label>
+                <div class="preview-box flex-grow-1 d-flex align-items-center justify-content-center p-2">
+                    <img id="previewImage" class="img-fluid d-none" style="border-radius: 16px; object-fit: cover; width: 100%; max-height: 380px;" />
+                    <div id="previewPlaceholder" class="text-muted text-center">
+                        <span style="font-size: 2rem;">🍰</span>
+                        <p class="m-0 mt-2" style="font-size: 0.85rem;">Tải ảnh lên để xem trước tại đây</p>
+                    </div>
                 </div>
-
-                <div class="mb-3">
-                    <label asp-for="Price" class="form-label font-weight-bold">Giá bán</label>
-                    <input asp-for="Price" class="form-control" />
-                    <span asp-validation-for="Price" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-label font-weight-bold">Mô tả</label>
-                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-                    <span asp-validation-for="Description" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="CategoryId" class="form-label font-weight-bold">Danh mục</label>
-                    <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select form-control"></select>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label font-weight-bold">Hình ảnh đại diện</label>
-                    <input type="file" name="imageUrl" class="form-control" accept="image/*" />
-                </div>
-
-                <div class="d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-outline-secondary px-4">Quay lại</a>
-                    <button type="submit" class="btn btn-primary px-4">Thêm</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('imageInput').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = document.getElementById("previewImage");
+                img.src = e.target.result;
+                img.classList.remove('d-none');
+                document.getElementById("previewPlaceholder").classList.add('d-none');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>

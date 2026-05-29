@@ -1,62 +1,69 @@
 ﻿@model WebDoNgot.Models.Product
+
 @{
-    ViewData["Title"] = "Chi tiết sản phẩm";
+    ViewData["Title"] = Model.Name;
 }
 
-<div class="container mt-5">
+<style>
+    :root {
+        --primary-bakery: #9E6B75;
+        --accent-pink: #FDF6F8;
+        --text-dark: #4A3E41;
+        --bg-light: #FAF7F5;
+    }
+
+    body {
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+    }
+
+    .display-card {
+        background: white;
+        border: none;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(158, 107, 117, 0.04);
+        overflow: hidden;
+    }
+
+    .details-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .price-large {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-bakery);
+    }
+</style>
+
+<div class="container py-5">
     <div class="mb-4">
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm shadow-sm">
-            Quay lại danh sách
-        </a>
+        <a asp-action="Index" class="text-decoration-none text-muted" style="font-size: 0.9rem;">&larr; Quay lại</a>
     </div>
 
-    <div class="row g-4 bg-white p-4 rounded-3 shadow-sm border">
-        <div class="col-md-5">
-            <div class="border rounded-3 p-2 bg-light text-center mb-3 d-flex align-items-center justify-content-center" style="height: 350px; overflow: hidden;">
-                <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/no-image.png" : Model.ImageUrl)"
-                     alt="@Model.Name"
-                     class="img-fluid rounded"
-                     style="max-height: 100%; object-fit: contain;"
-                     onerror="this.onerror=null; this.src='/images/no-image.png';" />
+    <div class="card display-card p-4">
+        <div class="row g-5 align-items-center">
+            <div class="col-md-5 text-center">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid shadow-sm" style="border-radius: 20px; max-height: 400px; width: 100%; object-fit: cover;" />
+                }
             </div>
+            <div class="col-md-7">
+                <span class="badge mb-2" style="background-color: var(--accent-pink); color: var(--primary-bakery); padding: 6px 16px; border-radius: 20px; font-weight: 600;">
+                    @(Model.Category?.Name ?? "Product Details")
+                </span>
+                <h1 class="details-title mb-3">@Model.Name</h1>
+                <div class="price-large mb-4">@(Model.Price.ToString("#,##0"))đ</div>
 
-            @if (Model.ImageUrls != null && Model.ImageUrls.Any())
-            {
-                <div class="row g-2">
-                    @foreach (var imageUrl in Model.ImageUrls)
-                    {
-                        <div class="col-3">
-                            <div class="border rounded p-1 bg-light d-flex align-items-center justify-content-center" style="height: 70px; overflow: hidden;">
-                                <img src="@imageUrl" alt="Sub Image" class="img-fluid" style="max-height: 100%; object-fit: cover;" />
-                            </div>
-                        </div>
-                    }
-                </div>
-            }
-        </div>
+                <h5 class="font-weight-bold" style="color: #7A6B6E;">Description</h5>
+                <p class="text-muted lh-lg">@Model.Description</p>
 
-        <div class="col-md-7 d-flex flex-column justify-content-between">
-            <div>
-                <h1 class="text-dark font-weight-bold mb-2">@Model.Name</h1>
-                <div class="mb-4">
-                    <span class="text-danger font-weight-bold fs-2">@Model.Price.ToString("#,##0") đ</span>
+                <div class="mt-5 pt-3 border-top d-flex gap-2">
+                    <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-dark px-4" style="border-radius: 12px;">Sửa sản phẩm</a>
                 </div>
-                <hr />
-                <div class="mb-4">
-                    <h5 class="text-secondary font-weight-bold mb-2">Mô tả sản phẩm:</h5>
-                    <p class="text-muted lh-base" style="white-space: pre-line;">
-                        @(string.IsNullOrEmpty(Model.Description) ? "Sản phẩm này hiện chưa có mô tả chi tiết." : Model.Description)
-                    </p>
-                </div>
-            </div>
-
-            <div class="d-flex gap-2 pt-3 border-top">
-                <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-warning px-4 text-white shadow-sm">
-                    Chỉnh sửa
-                </a>
-                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger px-4 shadow-sm">
-                    Xóa
-                </a>
             </div>
         </div>
     </div>

@@ -1,75 +1,23 @@
 ﻿@model WebDoNgot.Models.Product
+
 @{
-    ViewData["Title"] = "Xóa " + Model.Name;
+    ViewData["Title"] = "Xóa sản phẩm";
 }
 
-<div class="container mt-5 mb-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 border-0 rounded-4 p-5 shadow-sm bg-white text-center">
+<div class="container py-5 d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="card p-5 text-center shadow-sm" style="border: none; border-radius: 24px; max-width: 500px; background: white;">
+        <div class="mb-4" style="font-size: 3rem;">⚠️</div>
+        <h3 style="font-family: 'Playfair Display', serif; font-weight: 700; color: #4A3E41;">Xóa sản phẩm?</h3>
+        <p class="text-muted my-3 px-3">
+            Bạn có chắc muốn xóa sản phẩm này <strong>@Model.Name</strong> from the showcase? This action cannot be undone.
+        </p>
 
-            <i class="bi bi-exclamation-triangle-fill text-danger display-4 mb-3 d-block"></i>
-            <h3 class="fw-bold mb-2 text-dark">Xác Nhận Xóa</h3>
-            <p class="text-muted small mb-4">Bạn có chắc chắn muốn xóa vĩnh viễn món ngọt này khỏi thực đơn kệ hàng?</p>
-
-            @if (!string.IsNullOrEmpty(Model.ImageUrl))
-            {
-                <div class="mb-4 text-center bg-light p-3 border border-dashed rounded-3 shadow-inner" style="max-width: 180px; margin: 0 auto;">
-                    <img src="@Model.ImageUrl" alt="@Model.Name" class="img-thumbnail border-0 rounded-3 shadow-sm" style="max-height: 120px; object-fit: cover;" onerror="this.onerror=null; this.src='/images/no-image.png';" />
-                </div>
-            }
-
-            <table class="table table-bordered mt-3 text-start align-middle shadow-xs rounded-3 overflow-hidden">
-                <tbody>
-                    <tr>
-                        <th class="bg-light w-30 text-secondary fw-bold small p-3">Tên sản phẩm:</th>
-                        <td class="p-3 text-dark fw-medium">@Model.Name</td>
-                    </tr>
-                    <tr>
-                        <th class="bg-light text-secondary fw-bold small p-3">Giá bán lẻ:</th>
-                        <td class="p-3 text-danger fw-bolder fs-5">@Model.Price.ToString("#,##0") đ</td>
-                    </tr>
-                    <tr>
-                        <th class="bg-light text-secondary fw-bold small p-3">Mô tả tóm tắt:</th>
-                        <td class="p-3 text-muted small lh-sm">@(string.IsNullOrEmpty(Model.Description) ? "Món bánh hiện tại đang được cập nhật thêm nguyên liệu thành phần chi tiết." : Model.Description)</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <form asp-action="DeleteConfirmed" method="post" class="mt-4 pt-3 border-top border-light">
-                <input type="hidden" asp-for="Id" />
-
-                <div class="d-flex justify-content-center gap-3">
-                    <a asp-action="Index" class="btn btn-outline-secondary px-4 py-2 rounded-3 fw-bold flex-grow-1">
-                        <i class="bi bi-arrow-left me-1"></i>Hủy bỏ
-                    </a>
-                    <button type="submit" class="btn btn-danger px-4 py-2 rounded-3 fw-bold flex-grow-1 shadow-sm">
-                        <i class="bi bi-trash3 me-1"></i>Xác nhận Xóa
-                    </button>
-                </div>
-            </form>
-        </div>
+        <form asp-action="DeleteConfirmed" method="post" class="mt-4">
+            <input type="hidden" asp-for="Id" />
+            <div class="d-flex gap-3 justify-content-center">
+                <a asp-action="Index" class="btn btn-light px-4 py-2.5" style="border-radius: 12px; width: 120px;">Hủy</a>
+                <button type="submit" class="btn btn-danger px-4 py-2.5" style="border-radius: 12px; width: 120px; background-color: #D9534F;">Xóa</button>
+            </div>
+        </form>
     </div>
 </div>
-
-<style>
-    body {
-        background-color: #f8f9fa;
-    }
-    /* Bo góc mịn màng chuẩn Modern UI */
-    .rounded-4 {
-        border-radius: 1rem !important;
-    }
-    /* Đổ bóng nhỏ cho bảng */
-    .shadow-xs {
-        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    }
-    /* Hiệu ứng viền nét đứt cho khung ảnh */
-    .border-dashed {
-        border-style: dashed !important;
-        border-color: #ced4da !important;
-    }
-    /* Hiệu ứng bóng đổ nội thất cho khung ảnh */
-    .shadow-inner {
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
-    }
-</style>
