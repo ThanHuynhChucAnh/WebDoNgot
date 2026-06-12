@@ -208,8 +208,8 @@
                 @if (User.IsInRole(SD.Role_Admin))
                 {
                     <div class="mt-5 pt-3 border-top">
-                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-bakery-admin-edit">
-                            <i class="fa-regular fa-pen-to-square"></i> Sửa đổi thông tin sản phẩm
+                        <a asp-action="Update" asp-route-id="@Model.Id" class="btn-bakery-admin-edit">
+                            <i class="fa-regular fa-pen-to-square"></i> Sửa thông tin sản phẩm
                         </a>
                     </div>
                 }

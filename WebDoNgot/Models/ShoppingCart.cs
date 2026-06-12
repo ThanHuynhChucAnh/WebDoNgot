@@ -6,6 +6,13 @@ namespace WebDoNgot.Models
     public class ShoppingCart
     {
         public List<CartItem> Items { get; set; } = new List<CartItem>();
+        public decimal Discount { get; set; } = 0; // Thêm trường giảm giá
+        public decimal ShippingFee { get; set; } = 15000; // Phí ship mặc định
+
+        public decimal GetGrandTotal()
+        {
+            return GetTotal() - Discount + ShippingFee;
+        }
 
         public void AddItem(CartItem item)
         {

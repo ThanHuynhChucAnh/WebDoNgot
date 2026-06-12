@@ -411,7 +411,7 @@
 
 <div class="container-fluid">
     <div class="row">
-        
+
         <div class="col-md-3 col-lg-2 sidebar border-end">
             <ul class="sidebar-menu">
                 <li class="sidebar-item active">
@@ -423,6 +423,15 @@
                 <li class="sidebar-item">
                     <a asp-controller="ShoppingCart" asp-action="OrderHistory"><i class="fa-solid fa-clock-rotate-left"></i>Lịch sử mua hàng</a>
                 </li>
+                @if (User.IsInRole(SD.Role_Admin))
+                {
+                    <li class="sidebar-item">
+                        <a asp-controller="ShoppingCart" asp-action="OrderManagement"><i class="fa-solid fa-list-check"></i>Quản lý đơn hàng</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a asp-controller="ShoppingCart" asp-action="RevenueDashboard"><i class="fa-solid fa-chart-line"></i>Dashboard Doanh thu</a>
+                    </li>
+                }
             </ul>
         </div>
 
@@ -519,13 +528,13 @@
                                             <span class="price-tag">@(product.Price.ToString("#,##0"))đ</span>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="action-container-bakery mt-auto">
                                         <div class="user-actions">
                                             <a asp-action="Display" asp-route-id="@product.Id" class="btn-action-new btn-view-new" title="Xem chi tiết">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
-                                            
+
                                             <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="@product.Id" class="btn-action-new btn-cart-new">
                                                 <i class="fa-solid fa-cart-shopping"></i> Mua ngay
                                             </a>
