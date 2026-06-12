@@ -32,7 +32,6 @@
         font-size: 2rem;
     }
 
-    /* Khung Card thông tin giao hàng */
     .checkout-form-card {
         background: #FFFFFF;
         border: none;
@@ -51,7 +50,6 @@
         padding-bottom: 10px;
     }
 
-    /* Tinh chỉnh Ô nhập liệu đầu vào */
     .bakery-input-group .form-control {
         border: 1.5px solid #E2DBD8;
         border-radius: 12px;
@@ -62,11 +60,11 @@
         background-color: #FFFDFD;
     }
 
-    .bakery-input-group .form-control:focus {
-        border-color: var(--primary-bakery);
-        box-shadow: 0 0 0 4px rgba(158, 107, 117, 0.1);
-        background-color: #FFFFFF;
-    }
+        .bakery-input-group .form-control:focus {
+            border-color: var(--primary-bakery);
+            box-shadow: 0 0 0 4px rgba(158, 107, 117, 0.1);
+            background-color: #FFFFFF;
+        }
 
     .bakery-input-group .form-label {
         font-weight: 600;
@@ -74,7 +72,6 @@
         font-size: 0.9rem;
     }
 
-    /* Nút Đặt hàng chính */
     .btn-bakery-checkout {
         background-color: var(--primary-bakery);
         color: #FFFFFF;
@@ -90,45 +87,46 @@
         gap: 8px;
     }
 
-    .btn-bakery-checkout:hover {
-        background-color: var(--primary-hover);
-        color: #FFFFFF;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(158, 107, 117, 0.2);
-    }
+        .btn-bakery-checkout:hover {
+            background-color: var(--primary-hover);
+            color: #FFFFFF;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(158, 107, 117, 0.2);
+        }
 
-    /* Tóm tắt đơn hàng bên phải (Biên lai tiệm bánh) */
+    /* ===== Order Summary Card ===== */
     .order-summary-card {
         background: #FFFFFF;
-        border: none;
         border-radius: 20px;
         box-shadow: 0 10px 30px rgba(158, 107, 117, 0.04);
         border: 1px solid rgba(226, 219, 216, 0.4);
         overflow: hidden;
     }
 
-    .order-summary-card .card-header {
-        background-color: var(--bg-light);
-        border-bottom: 1px solid rgba(226, 219, 216, 0.6);
-        font-family: 'Playfair Display', serif;
-        font-weight: 700;
-        color: var(--text-dark);
-        font-size: 1.15rem;
-        padding: 18px 20px;
-    }
+        .order-summary-card .card-header {
+            background-color: var(--bg-light);
+            border-bottom: 1px solid rgba(226, 219, 216, 0.6);
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 1.15rem;
+            padding: 18px 22px;
+        }
 
-    .order-summary-card .card-body {
-        padding: 22px;
-    }
+        .order-summary-card .card-body {
+            padding: 22px;
+        }
 
+    /* Danh sách sản phẩm */
     .summary-item-row {
         padding: 10px 0;
-        font-size: 0.95rem;
+        font-size: 0.92rem;
         border-bottom: 1px dashed #F2EAE7;
     }
-    .summary-item-row:last-of-type {
-        border-bottom: none;
-    }
+
+        .summary-item-row:last-of-type {
+            border-bottom: none;
+        }
 
     .summary-item-name {
         color: var(--text-dark);
@@ -140,14 +138,58 @@
         font-weight: 600;
     }
 
-    .total-price-box {
-        background-color: var(--accent-pink);
-        border-radius: 12px;
-        padding: 15px;
+    /* Divider */
+    .summary-divider {
+        border: none;
+        border-top: 1px solid #EDE6E3;
+        margin: 16px 0 12px;
+    }
+
+    /* Các dòng tổng tiền */
+    .summary-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding: 6px 0;
+        font-size: 0.93rem;
     }
+
+        .summary-row .label {
+            color: var(--text-muted);
+        }
+
+        .summary-row .value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .summary-row.discount-row .value {
+            color: #28A745;
+        }
+
+    /* Dòng tổng thanh toán */
+    .grand-total-box {
+        background-color: var(--accent-pink);
+        border-radius: 12px;
+        padding: 14px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+    }
+
+        .grand-total-box .label {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .grand-total-box .value {
+            font-weight: 700;
+            color: var(--primary-bakery);
+            font-size: 1.4rem;
+        }
 </style>
 
 <div class="container py-5">
@@ -159,10 +201,11 @@
 
     <div class="row g-4">
 
+        <!-- CỘT TRÁI: Form thông tin giao hàng -->
         <div class="col-lg-8">
             <div class="card checkout-form-card">
                 <form asp-action="Checkout" method="post">
-                    
+
                     <h4 class="form-section-title mb-4"><i class="fa-solid fa-truck-ramp-box me-2"></i>Thông tin nhận hàng</h4>
 
                     <div class="mb-4 bakery-input-group">
@@ -172,7 +215,7 @@
                     </div>
 
                     <div class="mb-4 bakery-input-group">
-                        <label class="form-label"><i class="fa-regular fa-comment-dots me-1 text-muted"></i> Ghi chú đơn hàng (Tùy chọn)</label>
+                        <label class="form-label"><i class="fa-regular fa-comment-dots me-1 text-muted"></i> Ghi chú đơn hàng <span class="text-muted fw-normal">(Tùy chọn)</span></label>
                         <textarea asp-for="Notes" class="form-control" rows="4" placeholder="Ví dụ: Giao giờ hành chính, bánh ít ngọt, viết chữ lên bánh..."></textarea>
                     </div>
 
@@ -186,6 +229,7 @@
             </div>
         </div>
 
+        <!-- CỘT PHẢI: Tóm tắt đơn hàng -->
         <div class="col-lg-4">
             <div class="card order-summary-card">
                 <div class="card-header">
@@ -195,7 +239,8 @@
                 <div class="card-body">
                     @if (cart != null && cart.Items != null && cart.Items.Any())
                     {
-                        <div class="mb-4">
+                        <!-- Danh sách sản phẩm -->
+                        <div class="mb-2">
                             @foreach (var item in cart.Items)
                             {
                                 <div class="d-flex justify-content-between align-items-center summary-item-row">
@@ -209,11 +254,35 @@
                             }
                         </div>
 
-                        <div class="total-price-box mt-3">
-                            <h5 class="mb-0 fw-bold text-dark" style="font-family: 'Playfair Display', serif;">Tổng cộng:</h5>
-                            <h4 class="mb-0 fw-bold" style="color: var(--primary-bakery); font-size: 1.4rem;">
-                                @cart.GetTotal().ToString("N0") <span class="fs-6 fw-semibold text-muted">đ</span>
-                            </h4>
+                        <hr class="summary-divider" />
+
+                        <!-- Tổng tiền hàng -->
+                        <div class="summary-row">
+                            <span class="label">Tổng tiền hàng</span>
+                            <span class="value">@cart.GetTotal().ToString("N0") đ</span>
+                        </div>
+
+                        <!-- Phí vận chuyển -->
+                        <div class="summary-row">
+                            <span class="label">Phí vận chuyển</span>
+                            <span class="value">@cart.ShippingFee.ToString("N0") đ</span>
+                        </div>
+
+                        <!-- Giảm giá (chỉ hiện nếu có) -->
+                        @if (cart.Discount > 0)
+                        {
+                            <div class="summary-row discount-row">
+                                <span class="label"><i class="fa-solid fa-circle-check me-1"></i>Giảm giá</span>
+                                <span class="value">- @cart.Discount.ToString("N0") đ</span>
+                            </div>
+                        }
+
+                        <!-- Tổng thanh toán -->
+                        <div class="grand-total-box">
+                            <span class="label">Tổng thanh toán</span>
+                            <span class="value">
+                                @cart.GetGrandTotal().ToString("N0") <span class="fs-6 fw-semibold text-muted">đ</span>
+                            </span>
                         </div>
                     }
                     else
@@ -222,10 +291,10 @@
                     }
                 </div>
             </div>
-            
+
             <div class="text-center mt-3">
-                <a asp-controller="Product" asp-action="Index" class="text-decoration-none small text-muted" style="font-weight: 500;">
-                    <i class="fa-solid fa-arrow-left me-1"></i> Tiếp tục mua bánh
+                <a asp-controller="ShoppingCart" asp-action="Index" class="text-decoration-none small text-muted" style="font-weight: 500;">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Quay lại giỏ hàng
                 </a>
             </div>
         </div>

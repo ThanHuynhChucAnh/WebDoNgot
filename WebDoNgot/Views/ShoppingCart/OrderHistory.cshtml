@@ -31,10 +31,8 @@
         font-size: 2rem;
     }
 
-    /* Thẻ bọc thông tin của từng Đơn hàng */
     .bakery-order-card {
         background: #FFFFFF;
-        border: none;
         border-radius: 24px;
         box-shadow: 0 10px 40px rgba(158, 107, 117, 0.04);
         border: 1px solid rgba(226, 219, 216, 0.4);
@@ -62,7 +60,6 @@
         font-size: 1rem;
     }
 
-    /* Định dạng Table */
     .bakery-order-table {
         border-collapse: separate;
         border-spacing: 0;
@@ -85,7 +82,6 @@
             border-bottom: 1px solid #F2EAE7 !important;
         }
 
-    /* Định dạng ảnh sản phẩm */
     .bakery-product-img {
         width: 65px;
         height: 65px;
@@ -95,24 +91,50 @@
         box-shadow: 0 4px 10px rgba(158, 107, 117, 0.05);
     }
 
-    /* Khối tổng tiền chân đơn hàng */
+    /* ===== Summary box ===== */
     .order-summary-box {
         background-color: var(--bg-light);
         border-radius: 16px;
-        padding: 16px 24px;
-        display: inline-block;
-        min-width: 320px;
-        border: 1px solid rgba(226, 219, 216, 0.4);
+        padding: 20px 24px;
+        min-width: 300px;
+        border: 1px solid rgba(226, 219, 216, 0.5);
     }
 
-    .total-title {
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 0;
+        font-size: 0.92rem;
+    }
+
+        .summary-row .label {
+            color: var(--text-muted);
+        }
+
+        .summary-row .value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .summary-row.discount-row .value {
+            color: #28A745;
+        }
+
+    .summary-divider {
+        border: none;
+        border-top: 1px dashed #E2DBD8;
+        margin: 10px 0;
+    }
+
+    .summary-row.grand-total .label {
         font-family: 'Playfair Display', serif;
         font-weight: 700;
-        font-size: 1.05rem;
+        font-size: 1rem;
         color: var(--text-dark);
     }
 
-    .total-amount {
+    .summary-row.grand-total .value {
         font-size: 1.4rem;
         font-weight: 700;
         color: var(--primary-bakery);
@@ -141,7 +163,12 @@
 </style>
 
 <div class="container py-5">
-    
+    <div class="mb-4">
+        <a asp-controller="Product" asp-action="Index" class="btn btn-bakery-back px-3 py-2">
+            <i class="fa-solid fa-arrow-left me-2"></i> Quay lại
+        </a>
+    </div>
+
     <div class="mb-5 text-center text-sm-start">
         <h2 class="order-title mb-1">
             <i class="fa-solid fa-clock-rotate-left text-muted me-2"></i>Lịch sử mua hàng
@@ -152,9 +179,7 @@
     @if (Model == null || !Model.Any())
     {
         <div class="text-center py-5 card bakery-order-card">
-            <div class="mb-3 text-muted" style="font-size: 3.5rem;">
-                <i class="fa-solid fa-cookie"></i>
-            </div>
+            <div class="mb-3 text-muted" style="font-size: 3.5rem;"><i class="fa-solid fa-cookie"></i></div>
             <h4 class="fw-bold text-dark mb-2" style="font-family: 'Playfair Display', serif;">Bạn chưa có đơn hàng nào</h4>
             <p class="text-muted mb-4">Các món bánh Premium thơm ngon đang chờ đợi để được phục vụ bạn.</p>
             <div>
@@ -169,41 +194,40 @@
         @foreach (var order in Model)
         {
             <div class="card bakery-order-card">
-                
-                <div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3 pb-3 border-bottom" style="border-color: #F2EAE7 !important;">
-                    <span class="badge px-3 py-2 rounded-pill" style="background-color: var(--accent-pink); color: var(--primary-bakery); font-weight: 600;">
-                        <i class="fa-solid fa-circle-check me-1"></i> Đã ghi nhận đơn hàng
+
+                <!-- Header đơn hàng -->
+                <div class="d-flex justify-content-between align-items-center pb-3 border-bottom mb-3">
+                    <h5 class="mb-0 fw-bold" style="color: var(--primary-bakery);">
+                        <i class="fa-solid fa-receipt me-2"></i>Đơn hàng @order.Id
+                    </h5>
+                    <span class="badge px-3 py-2 rounded-pill" style="background-color: var(--accent-pink); color: var(--primary-bakery);">
+                        <i class="fa-solid fa-calendar-day me-1"></i> @order.OrderDate.ToString("dd/MM/yyyy HH:mm")
                     </span>
                 </div>
 
-                <div class="row g-3 mb-4 bg-light-subtle p-2 rounded-4">
-                    <div class="col-md-3 col-sm-6">
-                        <div class="info-label mb-1"><i class="fa-regular fa-calendar-check me-1"></i> Ngày đặt</div>
-                        <div class="info-value">@order.OrderDate.ToString("dd/MM/yyyy")</div>
+                <!-- Địa chỉ & ghi chú -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="info-label mb-1"><i class="fa-solid fa-location-dot me-1"></i> Địa chỉ giao:</div>
+                        <div class="info-value">@order.ShippingAddress</div>
                     </div>
-                    
-                    <div class="col-md-5 col-sm-6">
-                        <div class="info-label mb-1"><i class="fa-solid fa-location-dot me-1"></i> Địa chỉ giao hàng</div>
-                        <div class="info-value text-truncate" title="@order.ShippingAddress">@order.ShippingAddress</div>
-                    </div>
-
-                    <div class="col-md-4 col-12">
-                        <div class="info-label mb-1"><i class="fa-regular fa-comment-dots me-1"></i> Ghi chú</div>
-                        <div class="info-value text-truncate" style="font-style: @(string.IsNullOrEmpty(order.Notes) ? "italic" : "normal"); font-weight: 500;">
+                    <div class="col-md-6">
+                        <div class="info-label mb-1"><i class="fa-regular fa-comment-dots me-1"></i> Ghi chú:</div>
+                        <div class="info-value text-muted" style="font-weight:500;">
                             @(string.IsNullOrEmpty(order.Notes) ? "Không có ghi chú" : order.Notes)
                         </div>
                     </div>
                 </div>
 
+                <!-- Bảng sản phẩm -->
                 <div class="table-responsive">
                     <table class="table align-middle bakery-order-table mb-0">
                         <thead>
                             <tr>
-                                <th width="100">Hình ảnh</th>
                                 <th>Sản phẩm</th>
-                                <th width="120" class="text-center">Số lượng</th>
-                                <th width="150" class="text-end">Đơn giá</th>
-                                <th width="160" class="text-end">Thành tiền</th>
+                                <th class="text-center">SL</th>
+                                <th class="text-end">Đơn giá</th>
+                                <th class="text-end">Thành tiền</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -211,35 +235,15 @@
                             {
                                 <tr>
                                     <td>
-                                        @if (item.Product != null && !string.IsNullOrEmpty(item.Product.ImageUrl))
-                                        {
-                                            <img src="@item.Product.ImageUrl" alt="@item.Product.Name" class="bakery-product-img" />
-                                        }
-                                        else
-                                        {
-                                            <div class="bg-secondary-subtle text-muted d-flex align-items-center justify-content-center bakery-product-img" style="font-size: 0.75rem;">
-                                                <i class="fa-solid fa-cake-candles opacity-50"></i>
-                                            </div>
-                                        }
+                                        <div class="d-flex align-items-center">
+                                            <img src="@item.Product?.ImageUrl" class="bakery-product-img me-3" />
+                                            <span class="fw-semibold">@(item.Product?.Name ?? "Sản phẩm")</span>
+                                        </div>
                                     </td>
-
-                                    <td>
-                                        <span class="fw-bold text-dark d-block" style="font-size: 0.95rem;">
-                                            @(item.Product?.Name ?? "Sản phẩm ngọt")
-                                        </span>
-                                        <span class="text-muted small" style="font-size: 0.8rem;">Món ngọt Premium</span>
-                                    </td>
-
-                                    <td class="text-center fw-semibold text-dark">
-                                        @item.Quantity
-                                    </td>
-
-                                    <td class="text-end fw-semibold text-secondary" style="font-size: 0.9rem;">
-                                        @item.Price.ToString("N0") <span class="small text-muted">đ</span>
-                                    </td>
-
-                                    <td class="text-end fw-bold" style="color: var(--primary-bakery); font-size: 0.95rem;">
-                                        @((item.Quantity * item.Price).ToString("N0")) <span class="small font-weight-normal text-muted">đ</span>
+                                    <td class="text-center">@item.Quantity</td>
+                                    <td class="text-end">@item.Price.ToString("N0") đ</td>
+                                    <td class="text-end fw-bold" style="color: var(--primary-bakery);">
+                                        @((item.Quantity * item.Price).ToString("N0")) đ
                                     </td>
                                 </tr>
                             }
@@ -247,16 +251,35 @@
                     </table>
                 </div>
 
-                <div class="text-end mt-4">
-                    <div class="card order-summary-box shadow-sm mb-0 text-start">
-                        <div class="d-flex justify-content-between align-items-center gap-4">
-                            <span class="total-title">
-                                <i class="fa-solid fa-basket-shopping me-1 text-muted"></i> Tổng tiền đơn hàng:
-                            </span>
-                            <span class="total-amount">
-                                @order.TotalPrice.ToString("N0") <span class="fs-6 fw-normal text-muted">đ</span>
-                            </span>
+                <!-- Tóm tắt tiền -->
+                <div class="d-flex justify-content-end mt-4">
+                    <div class="order-summary-box">
+
+                        <div class="summary-row">
+                            <span class="label">Tổng tiền hàng</span>
+                            <span class="value">@order.OrderDetails.Sum(x => x.Price * x.Quantity).ToString("N0") đ</span>
                         </div>
+
+                        <div class="summary-row">
+                            <span class="label">Phí vận chuyển</span>
+                            <span class="value">@order.ShippingFee.ToString("N0") đ</span>
+                        </div>
+
+                        @if (order.Discount > 0)
+                        {
+                            <div class="summary-row discount-row">
+                                <span class="label"><i class="fa-solid fa-circle-check me-1"></i>Giảm giá</span>
+                                <span class="value">- @order.Discount.ToString("N0") đ</span>
+                            </div>
+                        }
+
+                        <hr class="summary-divider" />
+
+                        <div class="summary-row grand-total">
+                            <span class="label">Tổng thanh toán</span>
+                            <span class="value">@order.TotalPrice.ToString("N0") <span class="fs-6 fw-normal text-muted">đ</span></span>
+                        </div>
+
                     </div>
                 </div>
 
@@ -264,9 +287,4 @@
         }
     }
 
-    <div class="mt-4">
-        <a asp-controller="Home" asp-action="Index" class="btn btn-bakery-back">
-            <i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ chọn bánh
-        </a>
-    </div>
 </div>

@@ -68,32 +68,38 @@ namespace WebDoNgot.Controllers
         // =============================================
         // 3. XÓA SẢN PHẨM KHỎI GIỎ HÀNG
         // =============================================
-        [AllowAnonymous]
+        [HttpPost]
         public IActionResult RemoveFromCart(int productId)
         {
             var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>("Cart") ?? new ShoppingCart();
             cart.RemoveItem(productId);
             HttpContext.Session.SetObjectAsJson("Cart", cart);
 
-            TempData["Success"] = "Đã xóa sản phẩm khỏi giỏ hàng.";
-            return RedirectToAction("Index");
+            return Json(new
+            {
+                success = true,
+                cartTotal = cart.GetTotal().ToString("N0") + " đ"
+            });
         }
 
         // =============================================
         // 4. CẬP NHẬT SỐ LƯỢNG (Tải lại trang)
         // =============================================
-        [AllowAnonymous]
+        [HttpPost]
         public IActionResult UpdateQuantity(int productId, int quantity)
         {
             var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>("Cart") ?? new ShoppingCart();
-
-            // Khống chế số lượng tối thiểu tránh lỗi
             if (quantity < 1) quantity = 1;
 
             cart.UpdateQuantity(productId, quantity);
             HttpContext.Session.SetObjectAsJson("Cart", cart);
 
-            return RedirectToAction("Index");
+            return Json(new
+            {
+                success = true,
+                lineTotal = (cart.Items.First(i => i.ProductId == productId).Price * quantity).ToString("N0") + " đ",
+                cartTotal = cart.GetTotal().ToString("N0") + " đ"
+            });
         }
 
         // =============================================
@@ -151,7 +157,9 @@ namespace WebDoNgot.Controllers
 
             order.UserId = user.Id;
             order.OrderDate = DateTime.UtcNow;
-            order.TotalPrice = cart.GetTotal();
+            order.ShippingFee = cart.ShippingFee;
+            order.Discount = cart.Discount;
+            order.TotalPrice = cart.GetGrandTotal();
             order.OrderDetails = cart.Items.Select(i => new OrderDetail
             {
                 ProductId = i.ProductId,
@@ -251,6 +259,149 @@ namespace WebDoNgot.Controllers
             }
 
             return View(order);
+        }
+
+
+        // =============================================
+        // 10. MÃ GIẢM GIÁ
+        // ============================================
+
+        [HttpPost]
+        public IActionResult ApplyCoupon(string couponCode)
+        {
+            var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>("Cart");
+            if (couponCode == "GIAMGIA10")
+            {
+                cart.Discount = cart.GetTotal() * 0.1m;
+                HttpContext.Session.SetObjectAsJson("Cart", cart);
+                return Json(new { success = true, discount = cart.Discount, grandTotal = cart.GetGrandTotal() });
+            }
+            return Json(new { success = false, message = "Mã không hợp lệ" });
+        }
+
+        // =============================================
+        // 11. ADMIN - QUẢN LÝ ĐƠN HÀNG
+        // =============================================
+        [Authorize(Roles = SD.Role_Admin)]
+        public async Task<IActionResult> OrderManagement(string? status)
+        {
+            var query = _context.Orders
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Product)
+                .Include(o => o.ApplicationUser)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(status))
+                query = query.Where(o => o.Status == status);
+
+            var orders = await query.OrderByDescending(o => o.OrderDate).ToListAsync();
+
+            ViewBag.CurrentStatus = status;
+            ViewBag.AllStatuses = new[]
+            {
+                SD.OrderStatus_Processing,
+                SD.OrderStatus_Shipped,
+                SD.OrderStatus_Delivered,
+                SD.OrderStatus_Cancelled
+            };
+
+            // Thống kê nhanh cho header
+            ViewBag.TotalOrders = await _context.Orders.CountAsync();
+            ViewBag.ProcessingCount = await _context.Orders.CountAsync(o => o.Status == SD.OrderStatus_Processing);
+            ViewBag.ShippedCount = await _context.Orders.CountAsync(o => o.Status == SD.OrderStatus_Shipped);
+            ViewBag.DeliveredCount = await _context.Orders.CountAsync(o => o.Status == SD.OrderStatus_Delivered);
+            ViewBag.CancelledCount = await _context.Orders.CountAsync(o => o.Status == SD.OrderStatus_Cancelled);
+
+            return View(orders);
+        }
+
+        // =============================================
+        // 12. ADMIN - CẬP NHẬT TRẠNG THÁI ĐƠN HÀNG
+        // =============================================
+        [Authorize(Roles = SD.Role_Admin)]
+        [HttpPost]
+        public async Task<IActionResult> UpdateOrderStatus(int orderId, string newStatus)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null)
+                return Json(new { success = false, message = "Không tìm thấy đơn hàng." });
+
+            order.Status = newStatus;
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, newStatus });
+        }
+
+        // =============================================
+        // 13. ADMIN - DASHBOARD DOANH THU
+        // =============================================
+        [Authorize(Roles = SD.Role_Admin)]
+        public async Task<IActionResult> RevenueDashboard()
+        {
+            var orders = await _context.Orders
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Product)
+                .ToListAsync();
+
+            var deliveredOrders = orders.Where(o => o.Status == SD.OrderStatus_Delivered).ToList();
+
+            // KPI
+            var totalRevenue = deliveredOrders.Sum(o => o.TotalPrice);
+            var totalOrders = orders.Count;
+            var deliveredCount = deliveredOrders.Count;
+            var aov = deliveredCount > 0 ? totalRevenue / deliveredCount : 0;
+            var conversionRate = totalOrders > 0
+                ? Math.Round((double)deliveredCount / totalOrders * 100, 1)
+                : 0;
+
+            ViewBag.TotalRevenue = totalRevenue;
+            ViewBag.TotalOrders = totalOrders;
+            ViewBag.AOV = aov;
+            ViewBag.ConversionRate = conversionRate;
+
+            // Biểu đồ doanh thu 6 tháng gần nhất (chỉ đơn Đã giao)
+            var sixMonthsAgo = DateTime.UtcNow.AddMonths(-5);
+            var revenueByMonth = deliveredOrders
+                .Where(o => o.OrderDate >= sixMonthsAgo)
+                .GroupBy(o => new { o.OrderDate.Year, o.OrderDate.Month })
+                .Select(g => new
+                {
+                    Label = $"{g.Key.Month:D2}/{g.Key.Year}",
+                    Revenue = g.Sum(o => o.TotalPrice),
+                    Count = g.Count()
+                })
+                .OrderBy(x => x.Label)
+                .ToList();
+
+            ViewBag.ChartLabels = System.Text.Json.JsonSerializer.Serialize(revenueByMonth.Select(x => x.Label));
+            ViewBag.ChartRevenue = System.Text.Json.JsonSerializer.Serialize(revenueByMonth.Select(x => x.Revenue));
+            ViewBag.ChartOrders = System.Text.Json.JsonSerializer.Serialize(revenueByMonth.Select(x => x.Count));
+
+            // Top 5 sản phẩm bán chạy nhất (theo số lượng)
+            var topProducts = orders
+                .SelectMany(o => o.OrderDetails)
+                .GroupBy(od => new { od.ProductId, Name = od.Product?.Name ?? "N/A", ImageUrl = od.Product?.ImageUrl })
+                .Select(g => new
+                {
+                    g.Key.ProductId,
+                    g.Key.Name,
+                    g.Key.ImageUrl,
+                    TotalQty = g.Sum(x => x.Quantity),
+                    TotalRevenue = g.Sum(x => x.Quantity * x.Price)
+                })
+                .OrderByDescending(x => x.TotalQty)
+                .Take(5)
+                .ToList();
+
+            ViewBag.TopProducts = topProducts;
+
+            // Thống kê trạng thái cho donut chart
+            ViewBag.ProcessingCount = orders.Count(o => o.Status == SD.OrderStatus_Processing);
+            ViewBag.ShippedCount = orders.Count(o => o.Status == SD.OrderStatus_Shipped);
+            ViewBag.DeliveredCount = deliveredCount;
+            ViewBag.CancelledCount = orders.Count(o => o.Status == SD.OrderStatus_Cancelled);
+
+            return View();
         }
     }
 }

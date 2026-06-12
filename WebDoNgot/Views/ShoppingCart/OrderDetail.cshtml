@@ -125,7 +125,11 @@
 </style>
 
 <div class="container py-5">
-    
+    <div class="mb-4">
+        <a asp-controller="Product" asp-action="Index" class="btn btn-bakery-back px-3 py-2">
+            <i class="fa-solid fa-arrow-left me-2"></i> Quay lại
+        </a>
+    </div>
     <div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
             <h2 class="order-title mb-1">
@@ -183,29 +187,45 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.OrderDetails)
-                    {
+                <tbody>
+                        @foreach (var item in Model.OrderDetails)
+                        {
                         <tr>
                             <td>
-                                <span class="fw-bold text-dark d-block" style="font-size: 1rem;">
-                                    @(item.Product?.Name ?? "Sản phẩm ngọt")
-                                </span>
-                                <span class="text-muted small" style="font-size: 0.8rem;">Món ngọt Premium</span>
+                                <div class="d-flex align-items-center">
+                                        @* Thêm thẻ img tại đây *@
+                                        @if (item.Product != null && !string.IsNullOrEmpty(item.Product.ImageUrl))
+                                        {
+                                        <img src="@item.Product.ImageUrl" alt="@item.Product.Name"
+                                             style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" class="me-3" />
+                                        }
+                                        else
+                                        {
+                                        <div style="width: 50px; height: 50px; background-color: #eee; border-radius: 8px;" class="me-3"></div>
+                                        }
+
+                                    <div>
+                                        <span class="fw-bold text-dark d-block" style="font-size: 1rem;">
+                                                @(item.Product?.Name ?? "Sản phẩm ngọt")
+                                        </span>
+                                        <span class="text-muted small" style="font-size: 0.8rem;">Món ngọt Premium</span>
+                                    </div>
+                                </div>
                             </td>
 
                             <td class="text-center fw-semibold text-dark">
-                                @item.Quantity
+                                    @item.Quantity
                             </td>
 
                             <td class="text-end fw-semibold text-secondary">
-                                @item.Price.ToString("N0") <span class="small text-muted">đ</span>
+                                    @item.Price.ToString("N0") <span class="small text-muted">đ</span>
                             </td>
 
                             <td class="text-end fw-bold" style="color: var(--primary-bakery);">
-                                @((item.Quantity * item.Price).ToString("N0")) <span class="small font-weight-normal text-muted">đ</span>
+                                    @((item.Quantity * item.Price).ToString("N0")) <span class="small font-weight-normal text-muted">đ</span>
                             </td>
                         </tr>
-                    }
+                        }
                 </tbody>
             </table>
         </div>
