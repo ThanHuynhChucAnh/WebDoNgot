@@ -1,0 +1,47 @@
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="navbar-nav gap-2 align-items-center">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        // Lấy tên đăng nhập và cắt bỏ phần @gmail.com
+        var fullUserName = UserManager.GetUserName(User) ?? "";
+        var displayName = fullUserName.Contains("@") ? fullUserName.Split('@')[0] : fullUserName;
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle nav-bakery-style px-3 py-2" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: var(--text-dark); font-weight: 600;">
+                <i class="fa-regular fa-user me-1" style="color: var(--primary-bakery);"></i> Xin chào, @displayName!
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm" aria-labelledby="profileDropdown" style="border-radius: 16px; background-color: #FFFFFF; min-width: 200px;">
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2 px-3 py-2 text-decoration-none text-dark" asp-area="Identity" asp-page="/Account/Manage/Index">
+                        <i class="fa-solid fa-address-card text-muted" style="width: 20px;"></i> Trang cá nhân
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider" style="border-top: 1px solid var(--accent-pink);"></li>
+                <li>
+                    <form id="logoutForm" class="d-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Product", new { area = "" })">
+                        <button id="logout" type="submit" class="dropdown-item d-flex align-items-center gap-2 px-3 py-2 text-danger bg-transparent border-0 w-100 text-start">
+                            <i class="fa-solid fa-right-from-bracket" style="width: 20px;"></i> Đăng xuất
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark bs-bakery-btn" id="register" asp-area="Identity" asp-page="/Account/Register">
+                Đăng ký
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark bs-bakery-btn" id="login" asp-area="Identity" asp-page="/Account/Login">
+                Đăng nhập
+            </a>
+        </li>
+    }
+</ul>

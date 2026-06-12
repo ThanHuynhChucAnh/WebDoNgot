@@ -1,0 +1,159 @@
+﻿@page
+@model LogoutModel
+@{
+    ViewData["Title"] = "Đăng xuất";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --primary-bakery: #9E6B75;
+        --primary-hover: #855660;
+        --accent-pink: #F7EBEF;
+        --active-pink-bg: #E8C5CC;
+        --text-dark: #4A3E41;
+        --text-muted: #8A7A7D;
+        --bg-light: #FAF7F5;
+    }
+
+    /* Card thông báo đăng xuất độc bản */
+    .logout-premium-card {
+        background: #FFFFFF;
+        border: none;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(158, 107, 117, 0.06);
+        max-width: 550px;
+        margin: 60px auto;
+        padding: 45px;
+        text-align: center;
+    }
+
+    .logout-icon-wrapper {
+        width: 80px;
+        height: 80px;
+        background-color: var(--accent-pink);
+        color: var(--primary-bakery);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.2rem;
+        margin: 0 auto 25px;
+        animation: floatEffect 3s ease-in-out infinite;
+    }
+
+    .logout-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--text-dark);
+        font-size: 1.8rem;
+        margin-bottom: 12px;
+    }
+
+    .logout-message {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+
+    /* Nút bấm xác nhận đăng xuất */
+    .btn-bakery-logout {
+        background-color: var(--primary-bakery);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 30px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-bakery-logout:hover {
+        background-color: var(--primary-hover);
+        color: #FFFFFF;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(158, 107, 117, 0.2);
+    }
+
+    /* Nút quay lại trang chủ */
+    .btn-bakery-back {
+        background-color: transparent;
+        color: var(--primary-bakery);
+        border: 1.5px solid var(--primary-bakery);
+        border-radius: 12px;
+        padding: 11px 30px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-bakery-back:hover {
+        background-color: var(--accent-pink);
+        color: var(--primary-hover);
+    }
+
+    @@keyframes floatEffect {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+    }
+</style>
+
+<div class="container py-3">
+    <div class="card logout-premium-card shadow-sm">
+        
+        @{
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                <div class="logout-icon-wrapper">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </div>
+                
+                <h3 class="logout-title">Bạn muốn đăng xuất?</h3>
+                <p class="logout-message">
+                    Cảm ơn bạn đã ghé thăm hệ thống cửa hàng bánh ngọt trực tuyến <strong>WebDoNgot</strong>. Hãy chắc chắn rằng bạn đã lưu lại mọi hành trình mua sắm trước khi rời đi nhé!
+                </p>
+
+                <form class="d-flex justify-content-center gap-3" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Product" method="post">
+                    <a href="/Product" class="btn btn-bakery-back">
+                        <i class="fa-solid fa-arrow-left"></i> Quay lại
+                    </a>
+                    <button type="submit" class="btn btn-bakery-logout shadow-sm">
+                        Xác nhận đăng xuất <i class="fa-solid fa-check"></i>
+                    </button>
+                </form>
+            }
+            else
+            {
+                <div class="logout-icon-wrapper" style="background-color: #EAF7EE; color: #52B76E;">
+                    <i class="fa-solid fa-cookie-bite"></i>
+                </div>
+                
+                <h3 class="logout-title">Hẹn gặp lại bạn nhé!</h3>
+                <p class="logout-message">
+                    Bạn đã đăng xuất thành công khỏi hệ thống. Những chiếc bánh ngọt ngào chuẩn Pháp luôn sẵn sàng chờ đón bạn trong lần quay trở lại tiếp theo.
+                </p>
+
+                <div class="text-center">
+                    <a href="/Product" class="btn btn-bakery-logout" style="background-color: #4A3E41;">
+                        <i class="fa-solid fa-cookie me-1"></i> Xem màn hình sản phẩm
+                    </a>
+                </div>
+            }
+        }
+        
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.IO;
 using WebDoNgot.Models;
 using WebDoNgot.Repositories;
-using System.IO;
 
 namespace WebDoNgot.Controllers
 {
@@ -32,6 +33,7 @@ namespace WebDoNgot.Controllers
         }
 
         // 2. HIỂN THỊ FORM THÊM SẢN PHẨM MỚI
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Add()
         {
             var categories = await _categoryRepository.GetAllAsync();
@@ -42,6 +44,7 @@ namespace WebDoNgot.Controllers
 
         // 3. XỬ LÝ THÊM SẢN PHẨM MỚI
         [HttpPost]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Add(Product product, IFormFile imageUrl)
         {
             if (ModelState.IsValid)
@@ -100,6 +103,7 @@ namespace WebDoNgot.Controllers
 
         // 6. Hiển thị form cập nhật sản phẩm
         [HttpGet]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Update(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
@@ -115,6 +119,7 @@ namespace WebDoNgot.Controllers
 
         // 7.Xử lý cập nhật sản phẩm
         [HttpPost]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Update(int id, Product product, IFormFile imageUrl)
         {
             ModelState.Remove("ImageUrl"); // Loại bỏ xác thực ModelState cho ImageUrl
@@ -158,6 +163,7 @@ namespace WebDoNgot.Controllers
             return View(product);
         }
         // 8. Hiển thị form xác nhận xóa sản phẩm
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
@@ -169,6 +175,7 @@ namespace WebDoNgot.Controllers
         }
         //9.  Xử lý xóa sản phẩm
         [HttpPost, ActionName("DeleteConfirmed")]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _productRepository.DeleteAsync(id);

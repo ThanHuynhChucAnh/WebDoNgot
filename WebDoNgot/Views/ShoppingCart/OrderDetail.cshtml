@@ -1,0 +1,233 @@
+﻿@model WebDoNgot.Models.Order
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --primary-bakery: #9E6B75;
+        --primary-hover: #855660;
+        --accent-pink: #F7EBEF;
+        --active-pink-bg: #E8C5CC;
+        --text-dark: #4A3E41;
+        --text-muted: #8A7A7D;
+        --bg-light: #FAF7F5;
+    }
+
+    body {
+        background-color: #FCF9F7;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: var(--text-dark);
+    }
+
+    .order-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--text-dark);
+        font-size: 2rem;
+    }
+
+    /* Thẻ bọc thông tin và bảng */
+    .bakery-order-card {
+        background: #FFFFFF;
+        border: none;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(158, 107, 117, 0.04);
+        border: 1px solid rgba(226, 219, 216, 0.4);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-value {
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 1.05rem;
+    }
+
+    /* Định dạng lại Table */
+    .bakery-order-table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+        .bakery-order-table thead th {
+            background-color: var(--bg-light) !important;
+            color: var(--text-dark) !important;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.82rem;
+            letter-spacing: 0.5px;
+            padding: 16px;
+            border-bottom: 2px solid var(--accent-pink) !important;
+            border-top: none !important;
+        }
+
+        .bakery-order-table tbody td {
+            padding: 18px 16px;
+            border-bottom: 1px solid #F2EAE7 !important;
+        }
+
+    /* Khối tổng tiền */
+    .order-summary-box {
+        background-color: var(--bg-light);
+        border-radius: 16px;
+        padding: 20px 24px;
+        display: inline-block;
+        min-width: 320px;
+        border: 1px solid rgba(226, 219, 216, 0.4);
+    }
+
+    .total-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--text-dark);
+    }
+
+    .total-amount {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--primary-bakery);
+    }
+
+    .btn-bakery-back {
+        background-color: transparent;
+        color: var(--text-muted);
+        border: 1.5px solid #E2DBD8;
+        border-radius: 12px;
+        padding: 11px 24px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .btn-bakery-back:hover {
+            background-color: var(--accent-pink);
+            color: var(--primary-bakery);
+            border-color: var(--active-pink-bg);
+        }
+</style>
+
+<div class="container py-5">
+    
+    <div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h2 class="order-title mb-1">
+                <i class="fa-solid fa-receipt text-muted me-2"></i>Chi tiết đơn hàng #@Model.Id
+            </h2>
+            <p class="text-muted small mb-0">Cảm ơn bạn đã lựa chọn hương vị ngọt ngào từ tiệm bánh của chúng tôi.</p>
+        </div>
+        <span class="badge px-3 py-2 rounded-pill" style="background-color: var(--accent-pink); color: var(--primary-bakery); font-weight: 600;">
+            <i class="fa-solid fa-circle-check me-1"></i> Đã ghi nhận đơn hàng
+        </span>
+    </div>
+
+    <div class="card bakery-order-card mb-4">
+        <h5 class="fw-bold mb-4" style="font-family: 'Playfair Display', serif;">
+            <i class="fa-solid fa-truck-fast text-muted me-2"></i>Thông tin giao nhận
+        </h5>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="info-label mb-1"><i class="fa-regular fa-calendar-check me-1"></i> Ngày đặt hàng</div>
+                <div class="info-value">@Model.OrderDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="info-label mb-1"><i class="fa-solid fa-location-dot me-1"></i> Địa chỉ giao hàng</div>
+                <div class="info-value">@Model.ShippingAddress</div>
+            </div>
+
+            <div class="col-12">
+                <hr class="my-2" style="border-color: #F2EAE7;" />
+            </div>
+
+            <div class="col-12">
+                <div class="info-label mb-1"><i class="fa-regular fa-comment-dots me-1"></i> Ghi chú đơn hàng</div>
+                <div class="info-value text-secondary" style="font-style: @(string.IsNullOrEmpty(Model.Notes) ? "italic" : "normal"); font-weight: 500;">
+                    @(string.IsNullOrEmpty(Model.Notes) ? "Không có ghi chú nào cho đơn hàng này." : Model.Notes)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bakery-order-card">
+        <h5 class="fw-bold mb-4" style="font-family: 'Playfair Display', serif;">
+            <i class="fa-solid fa-cookie-bite text-muted me-2"></i>Danh sách món ngọt đã đặt
+        </h5>
+
+        <div class="table-responsive">
+            <table class="table align-middle bakery-order-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th width="140" class="text-center">Số lượng</th>
+                        <th width="160" class="text-end">Đơn giá</th>
+                        <th width="180" class="text-end">Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td>
+                                <span class="fw-bold text-dark d-block" style="font-size: 1rem;">
+                                    @(item.Product?.Name ?? "Sản phẩm ngọt")
+                                </span>
+                                <span class="text-muted small" style="font-size: 0.8rem;">Món ngọt Premium</span>
+                            </td>
+
+                            <td class="text-center fw-semibold text-dark">
+                                @item.Quantity
+                            </td>
+
+                            <td class="text-end fw-semibold text-secondary">
+                                @item.Price.ToString("N0") <span class="small text-muted">đ</span>
+                            </td>
+
+                            <td class="text-end fw-bold" style="color: var(--primary-bakery);">
+                                @((item.Quantity * item.Price).ToString("N0")) <span class="small font-weight-normal text-muted">đ</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-end mt-4">
+            <div class="card order-summary-box shadow-sm mb-0 text-start">
+                <div class="d-flex justify-content-between align-items-center gap-5">
+                    <span class="total-title">
+                        <i class="fa-solid fa-basket-shopping me-1 text-muted"></i> Tổng cộng thanh toán:
+                    </span>
+                    <span class="total-amount">
+                        @Model.TotalPrice.ToString("N0") <span class="fs-6 fw-normal text-muted">đ</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-controller="Product" asp-action="Index" class="btn btn-bakery-back">
+            <i class="fa-solid fa-arrow-left"></i> Quay lại cửa hàng chọn bánh
+        </a>
+    </div>
+
+</div>

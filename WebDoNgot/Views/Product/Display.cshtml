@@ -1,70 +1,224 @@
 ﻿@model WebDoNgot.Models.Product
 
 @{
-    ViewData["Title"] = Model.Name;
+    ViewData["Title"] = "Chi tiết sản phẩm";
 }
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
     :root {
         --primary-bakery: #9E6B75;
-        --accent-pink: #FDF6F8;
+        --primary-hover: #855660;
+        --accent-pink: #F7EBEF;
+        --active-pink-bg: #E8C5CC;
         --text-dark: #4A3E41;
+        --text-muted: #8A7A7D;
         --bg-light: #FAF7F5;
     }
 
     body {
-        background-color: var(--bg-light);
+        background-color: #FCF9F7;
+        font-family: 'Plus Jakarta Sans', sans-serif;
         color: var(--text-dark);
     }
 
-    .display-card {
-        background: white;
-        border: none;
-        border-radius: 24px;
-        box-shadow: 0 10px 30px rgba(158, 107, 117, 0.04);
-        overflow: hidden;
+    /* Khung điều hướng quay lại */
+    .bakery-back-link {
+        color: var(--text-muted);
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: color 0.2s ease;
     }
 
+        .bakery-back-link:hover {
+            color: var(--primary-bakery);
+        }
+
+    /* Card hiển thị chi tiết cao cấp */
+    .display-card {
+        background: #FFFFFF;
+        border: none;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(158, 107, 117, 0.05);
+        overflow: hidden;
+        border: 1px solid rgba(226, 219, 216, 0.4);
+    }
+
+    /* Khung bọc ảnh sản phẩm */
+    .details-img-container {
+        background-color: var(--bg-light);
+        border-radius: 20px;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: 1px solid rgba(226, 219, 216, 0.3);
+    }
+
+    .details-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .details-img-container:hover .details-img {
+        transform: scale(1.03);
+    }
+
+    .details-img-placeholder {
+        font-size: 5rem;
+        color: var(--active-pink-bg);
+    }
+
+    /* Chi tiết chữ */
     .details-title {
         font-family: 'Playfair Display', serif;
         font-weight: 700;
         color: var(--text-dark);
+        font-size: 2.2rem;
+        line-height: 1.3;
     }
 
     .price-large {
-        font-size: 1.8rem;
+        font-size: 2rem;
         font-weight: 700;
         color: var(--primary-bakery);
     }
+
+        .price-large span {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-left: 2px;
+        }
+
+    .description-heading {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: #615154;
+        font-size: 1.15rem;
+    }
+
+    /* Nút Thêm vào giỏ hàng tinh tế */
+    .btn-bakery-cart {
+        background-color: var(--primary-bakery);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 12px;
+        padding: 14px 28px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+        .btn-bakery-cart:hover {
+            background-color: var(--primary-hover);
+            color: #FFFFFF;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(158, 107, 117, 0.25);
+        }
+
+    /* Nút quản trị */
+    .btn-bakery-admin-edit {
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+        border: 1px solid #E2DBD8;
+        border-radius: 12px;
+        padding: 10px 24px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .btn-bakery-admin-edit:hover {
+            background-color: var(--accent-pink);
+            color: var(--primary-bakery);
+            border-color: var(--active-pink-bg);
+        }
 </style>
 
 <div class="container py-5">
+    
     <div class="mb-4">
-        <a asp-action="Index" class="text-decoration-none text-muted" style="font-size: 0.9rem;">&larr; Quay lại</a>
+        <a asp-action="Index" class="text-decoration-none bakery-back-link">
+            <i class="fa-solid fa-arrow-left-long me-1"></i> Trở về thực đơn sản phẩm
+        </a>
     </div>
 
-    <div class="card display-card p-4">
+    <div class="card display-card p-4 p-lg-5">
         <div class="row g-5 align-items-center">
-            <div class="col-md-5 text-center">
-                @if (!string.IsNullOrEmpty(Model.ImageUrl))
-                {
-                    <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid shadow-sm" style="border-radius: 20px; max-height: 400px; width: 100%; object-fit: cover;" />
-                }
-            </div>
-            <div class="col-md-7">
-                <span class="badge mb-2" style="background-color: var(--accent-pink); color: var(--primary-bakery); padding: 6px 16px; border-radius: 20px; font-weight: 600;">
-                    @(Model.Category?.Name ?? "Product Details")
-                </span>
-                <h1 class="details-title mb-3">@Model.Name</h1>
-                <div class="price-large mb-4">@(Model.Price.ToString("#,##0"))đ</div>
-
-                <h5 class="font-weight-bold" style="color: #7A6B6E;">Description</h5>
-                <p class="text-muted lh-lg">@Model.Description</p>
-
-                <div class="mt-5 pt-3 border-top d-flex gap-2">
-                    <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-dark px-4" style="border-radius: 12px;">Sửa sản phẩm</a>
+            
+            <div class="col-md-5">
+                <div class="details-img-container shadow-sm">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Model.ImageUrl" alt="@Model.Name" class="details-img" />
+                    }
+                    else
+                    {
+                        <div class="details-img-placeholder text-center">
+                            <i class="fa-solid fa-cookie-bite d-block mb-2"></i>
+                            <span class="d-block fs-6 text-muted fw-normal">Hình ảnh đang cập nhật</span>
+                        </div>
+                    }
                 </div>
+            </div>
+            
+            <div class="col-md-7">
+                
+                <span class="badge mb-3" style="background-color: var(--accent-pink); color: var(--primary-bakery); padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
+                    <i class="fa-solid fa-bookmark me-1"></i> @(Model.Category?.Name ?? "Sản phẩm đặc trưng")
+                </span>
+                
+                <h1 class="details-title mb-2">@Model.Name</h1>
+                <div class="price-large mb-4">
+                    @(Model.Price.ToString("#,##0"))<span>đ</span>
+                </div>
+
+                <div class="mb-4">
+                    <h5 class="description-heading mb-2">Mô tả sản phẩm</h5>
+                    <p class="text-muted lh-lg" style="font-size: 0.95rem; text-align: justify;">
+                        @if (!string.IsNullOrEmpty(Model.Description))
+                        {
+                            @Model.Description
+                        }
+                        else
+                        {
+                            <span class="fst-italic">Món bánh ngọt tinh tế này được làm từ các nguyên liệu thượng hạng, nướng mới hằng ngày bởi các thợ làm bánh lành nghề. Hương vị thơm ngon đặc trưng chắc chắn sẽ mang đến cho bạn trải nghiệm ẩm thực trọn vẹn.</span>
+                        }
+                    </p>
+                </div>
+                <div class="mb-2">
+                    <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="@Model.Id" class="btn btn-bakery-cart shadow-sm">
+                        <i class="fa-solid fa-cart-shopping"></i> Thêm vào giỏ hàng
+                    </a>
+                </div>
+                @if (User.IsInRole(SD.Role_Admin))
+                {
+                    <div class="mt-5 pt-3 border-top">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-bakery-admin-edit">
+                            <i class="fa-regular fa-pen-to-square"></i> Sửa đổi thông tin sản phẩm
+                        </a>
+                    </div>
+                }
+
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

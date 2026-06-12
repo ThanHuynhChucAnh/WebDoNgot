@@ -1,0 +1,149 @@
+﻿@model int
+
+@{
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --primary-bakery: #9E6B75;
+        --primary-hover: #855660;
+        --accent-pink: #F7EBEF;
+        --active-pink-bg: #E8C5CC;
+        --text-dark: #4A3E41;
+        --text-muted: #8A7A7D;
+        --bg-light: #FAF7F5;
+        --success-bakery: #6B9E78;
+    }
+
+    body {
+        background-color: #FCF9F7;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: var(--text-dark);
+    }
+
+    /* Card thông báo trung tâm */
+    .success-bakery-card {
+        background: #FFFFFF;
+        border: none;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(158, 107, 117, 0.05);
+        max-width: 580px;
+        margin: 60px auto;
+        padding: 45px 35px;
+        text-align: center;
+        border: 1px solid rgba(226, 219, 216, 0.4);
+    }
+
+    /* Vòng tròn Icon chuyển động nhẹ nhàng */
+    .success-icon-wrapper {
+        width: 90px;
+        height: 90px;
+        background-color: #EAF7EE;
+        color: var(--success-bakery);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.8rem;
+        margin: 0 auto 30px;
+        animation: scaleInEffect 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    .success-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--text-dark);
+        font-size: 2.2rem;
+        margin-bottom: 12px;
+    }
+
+    .success-lead {
+        color: var(--text-muted);
+        font-size: 1.05rem;
+        line-height: 1.6;
+        max-width: 440px;
+        margin: 0 auto 30px;
+    }
+
+    /* Khung hiển thị mã hóa đơn dạng vé */
+    .order-ticket-badge {
+        background-color: var(--bg-light);
+        border: 1.5px dashed var(--active-pink-bg);
+        border-radius: 14px;
+        padding: 14px 28px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.05rem;
+        color: var(--text-dark);
+        margin-bottom: 40px;
+    }
+
+    .order-ticket-badge strong {
+        color: var(--primary-bakery);
+        font-weight: 700;
+    }
+
+    /* Nút hành động quay lại xem sản phẩm */
+    .btn-bakery-home {
+        background-color: var(--primary-bakery);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 12px;
+        padding: 13px 32px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-bakery-home:hover {
+        background-color: var(--primary-hover);
+        color: #FFFFFF;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(158, 107, 117, 0.2);
+    }
+
+    @@keyframes scaleInEffect {
+        0% { transform: scale(0.6); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+</style>
+
+<div class="container py-4">
+    <div class="card success-bakery-card">
+        <div class="card-body p-0">
+            
+            <div class="success-icon-wrapper">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            
+            <h1 class="success-title">Đặt hàng thành công!</h1>
+            <p class="lead success-lead">
+                Cảm ơn bạn đã lựa chọn những hương vị ngọt ngào từ <strong>WebDoNgot</strong>. Đơn hàng của bạn đã được tiếp nhận và đang được chuẩn bị bởi những thợ bánh lành nghề.
+            </p>
+
+            <div>
+                <div class="order-ticket-badge shadow-sm">
+                    <i class="fa-solid fa-receipt text-muted"></i>
+                    <span>Mã đơn hàng của bạn:</span>
+                    <strong>#@Model</strong>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a asp-controller="Product" asp-action="Index" class="btn btn-bakery-home shadow-sm">
+                    <i class="fa-solid fa-cookie-bite"></i> Tiếp tục khám phá menu
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>

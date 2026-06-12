@@ -1,0 +1,253 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Đăng nhập tài khoản";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --primary-bakery: #9E6B75;
+        --primary-hover: #855660;
+        --accent-pink: #F7EBEF;
+        --active-pink-bg: #E8C5CC;
+        --text-dark: #4A3E41;
+        --text-muted: #8A7A7D;
+        --bg-light: #FAF7F5;
+    }
+
+    /* Khung card đăng nhập kép siêu sang */
+    .login-premium-card {
+        background: #FFFFFF;
+        border: none;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(158, 107, 117, 0.06);
+        overflow: hidden;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* Cột Form bên trái */
+    .login-form-side {
+        padding: 45px;
+    }
+
+    .login-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--text-dark);
+        font-size: 1.85rem;
+    }
+
+    /* Tinh chỉnh ô nhập liệu Floating Label phong cách ngọt ngào */
+    .bakery-floating .form-control {
+        border: 1.5px solid #E2DBD8;
+        border-radius: 12px;
+        padding: 1rem 0.75rem;
+        color: var(--text-dark);
+        font-size: 0.95rem;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .bakery-floating .form-control:focus {
+            border-color: var(--primary-bakery);
+            box-shadow: 0 0 0 4px rgba(158, 107, 117, 0.1);
+        }
+
+    .bakery-floating label {
+        color: var(--text-muted);
+        padding: 1rem 0.75rem;
+    }
+
+    /* Checkbox ghi nhớ mật khẩu */
+    .bakery-checkbox .form-check-input {
+        border-color: #E2DBD8;
+    }
+
+        .bakery-checkbox .form-check-input:checked {
+            background-color: var(--primary-bakery);
+            border-color: var(--primary-bakery);
+        }
+
+    .bakery-checkbox .form-check-label {
+        color: var(--text-dark);
+        font-weight: 500;
+        font-size: 0.9rem;
+        cursor: pointer;
+    }
+
+    /* Nút Đăng nhập chính */
+    .btn-bakery-login {
+        background-color: var(--primary-bakery);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 12px;
+        padding: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+
+        .btn-bakery-login:hover {
+            background-color: var(--primary-hover);
+            color: #FFFFFF;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(158, 107, 117, 0.2);
+        }
+
+    /* Các đường link bổ trợ phía dưới */
+    .bakery-login-links a {
+        color: var(--primary-bakery);
+        text-decoration: none;
+        font-size: 0.88rem;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+
+        .bakery-login-links a:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+    /* Cột hình ảnh bên phải (Banner ngọt ngào) */
+    .login-image-side {
+        background-image: linear-gradient(135deg, rgba(158, 107, 117, 0.15) 0%, rgba(74, 62, 65, 0.4) 100%), url('https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=800&q=80');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 45px;
+        color: #FFFFFF;
+        position: relative;
+    }
+
+    .image-side-logo {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        font-size: 2rem;
+        letter-spacing: 0.5px;
+        margin-bottom: 10px;
+    }
+
+    .image-side-tagline {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        opacity: 0.9;
+        font-weight: 400;
+    }
+
+    /* Định dạng lại khối đăng nhập bên thứ 3 (nếu có cấu hình) */
+    .external-login-btn {
+        border: 1px solid #E2DBD8;
+        background: #FFFFFF;
+        color: var(--text-dark);
+        border-radius: 10px;
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+        .external-login-btn:hover {
+            background: var(--bg-light);
+            border-color: var(--primary-bakery);
+        }
+</style>
+
+<div class="container my-5 py-4">
+    <div class="card login-premium-card shadow-sm">
+        <div class="row g-0">
+            
+            <div class="col-md-6 login-form-side d-flex flex-column justify-content-center">
+                <form id="account" method="post">
+                    <div class="mb-4">
+                        <h3 class="login-title mb-1">Chào mừng trở lại!</h3>
+                        <p class="text-muted small">Vui lòng đăng nhập tài khoản để tiếp tục trải nghiệm không gian bánh ngọt.</p>
+                    </div>
+                    
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3" role="alert"></div>
+                    
+                    <div class="form-floating bakery-floating mb-3">
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label asp-for="Input.Email"><i class="fa-regular fa-envelope me-2"></i>Địa chỉ Email</label>
+                        <span asp-validation-for="Input.Email" class="text-danger small mt-1 d-block"></span>
+                    </div>
+                    
+                    <div class="form-floating bakery-floating mb-3">
+                        <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                        <label asp-for="Input.Password"><i class="fa-solid fa-lock me-2"></i>Mật khẩu tài khoản</label>
+                        <span asp-validation-for="Input.Password" class="text-danger small mt-1 d-block"></span>
+                    </div>
+                    
+                    <div class="form-check bakery-checkbox mb-4 d-flex align-items-center gap-2">
+                        <input class="form-check-input mt-0" asp-for="Input.RememberMe" />
+                        <label class="form-check-label" asp-for="Input.RememberMe">
+                            Duy trì đăng nhập trên thiết bị này
+                        </label>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <button id="login-submit" type="submit" class="w-100 btn btn-bakery-login">
+                            Đăng nhập ngay <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="bakery-login-links d-flex flex-column gap-2 border-top pt-3">
+                        <div class="d-flex justify-content-between">
+                            <a id="forgot-password" asp-page="./ForgotPassword">Quên mật khẩu?</a>
+                            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Tạo tài khoản mới</a>
+                        </div>
+                        <div class="text-center mt-1">
+                            <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Gửi lại email xác thực</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="col-md-6 login-image-side text-center text-md-start">
+                <div class="mb-4">
+                    <div class="image-side-logo">
+                        <i class="fa-solid fa-stroopwafel me-1"></i> WebDoNgot
+                    </div>
+                    <p class="image-side-tagline">
+                        Hương vị ngọt ngào kết tinh từ kỹ nghệ làm bánh truyền thống, đem lại trải nghiệm tinh tế trọn vẹn trong từng khoảnh khắc.
+                    </p>
+                </div>
+
+                @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+                {
+                    <div class="mt-auto border-top border-white border-opacity-25 pt-4 w-100">
+                        <p class="small mb-2 opacity-75">Hoặc đăng nhập nhanh bằng:</p>
+                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                            <div class="d-flex gap-2 justify-content-center justify-content-md-start">
+                                @foreach (var provider in Model.ExternalLogins!)
+                                {
+                                    <button type="submit" class="btn external-login-btn shadow-sm" name="provider" value="@provider.Name" title="Đăng nhập bằng tài khoản @provider.DisplayName">
+                                        @if (provider.DisplayName.ToLower().Contains("google"))
+                                        {
+                                            <i class="fa-brands fa-google text-danger me-1"></i>
+                                        }
+                                        @if (provider.DisplayName.ToLower().Contains("facebook"))
+                                        {
+                                            <i class="fa-brands fa-facebook text-primary me-1"></i>
+                                        }
+                                        @provider.DisplayName
+                                    </button>
+                                }
+                            </div>
+                        </form>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
