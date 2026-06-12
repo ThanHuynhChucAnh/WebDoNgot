@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebDoNgot.Models;
 using WebDoNgot.Repositories;
 
@@ -22,6 +23,7 @@ namespace WebDoNgot.Controllers
 
         // 2. THÊM DANH MỤC (FORM GET)
         [HttpGet]
+        [Authorize(Roles = SD.Role_Admin)]
         public IActionResult Add()
         {
             return View();
@@ -29,6 +31,7 @@ namespace WebDoNgot.Controllers
 
         // XỬ LÝ THÊM DANH MỤC (POST)
         [HttpPost]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Add(Category category)
         {
             if (ModelState.IsValid)
@@ -41,6 +44,7 @@ namespace WebDoNgot.Controllers
 
         // 3. CẬP NHẬT DANH MỤC (FORM GET)
         [HttpGet]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Update(int id)
         {
             var category = await _categoryRepository.GetByIdAsync(id);
@@ -53,6 +57,7 @@ namespace WebDoNgot.Controllers
 
         // XỬ LÝ CẬP NHẬT DANH MỤC (POST)
         [HttpPost]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Update(Category category)
         {
             if (ModelState.IsValid)
@@ -65,6 +70,7 @@ namespace WebDoNgot.Controllers
 
         // 4. XÓA DANH MỤC (FORM XÁC NHẬN GET)
         [HttpGet]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             var category = await _categoryRepository.GetByIdAsync(id);
@@ -77,6 +83,7 @@ namespace WebDoNgot.Controllers
 
         // XỬ LÝ XÓA DANH MỤC (POST)
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _categoryRepository.DeleteAsync(id);

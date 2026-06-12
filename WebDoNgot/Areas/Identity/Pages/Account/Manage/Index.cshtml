@@ -1,0 +1,131 @@
+﻿@page
+@using WebDoNgot.Areas.Identity.Pages.Account.Manage
+@model IndexModel
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --primary-bakery: #9E6B75;
+        --primary-hover: #855660;
+        --accent-pink: #F7EBEF;
+        --active-pink-bg: #E8C5CC;
+        --text-dark: #4A3E41;
+        --text-muted: #8A7A7D;
+        --bg-light: #FAF7F5;
+    }
+
+    body {
+        background-color: #FCF9F7;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: var(--text-dark);
+    }
+
+    /* Đảm bảo vùng chứa thông tin cá nhân đủ cao để đẩy Footer xuống đáy */
+    .profile-page-wrapper {
+        min-height: calc(100vh - 180px); /* Tự động co giãn theo trình duyệt loại trừ thanh nav/footer */
+        padding-top: 3rem;
+        padding-bottom: 6rem; /* Tạo khoảng trống an toàn tuyệt đối với Footer */
+    }
+
+    .profile-card {
+        background: white;
+        border: none;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(158, 107, 117, 0.04);
+    }
+
+    .profile-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .form-control-bakery {
+        background-color: #FDF6F8;
+        border: 1px solid #F3DFE3;
+        border-radius: 12px;
+        padding: 12px 16px;
+        color: var(--text-dark);
+    }
+
+        .form-control-bakery:focus {
+            background-color: #fff;
+            border-color: var(--primary-bakery);
+            box-shadow: 0 0 0 0.2rem rgba(158, 107, 117, 0.15);
+        }
+
+    .btn-save-profile {
+        background-color: var(--primary-bakery);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-save-profile:hover {
+            background-color: var(--primary-hover);
+            color: white;
+            transform: translateY(-1px);
+        }
+</style>
+
+<div class="container profile-page-wrapper">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card profile-card p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <span style="font-size: 3.5rem;">🍰</span>
+                    <h2 class="profile-title mt-2">Thông tin tài khoản</h2>
+                    <p class="text-muted small">Cập nhật thông tin cá nhân của bạn để nhận bánh chính xác nhất</p>
+                </div>
+
+                <partial name="_StatusMessage" model="Model.StatusMessage" />
+
+                <form id="profile-form" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="color: #7A6B6E;">Tên đăng nhập</label>
+                            <input asp-for="Username" class="form-control form-control-bakery" placeholder="Username" disabled />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Input.PhoneNumber" class="form-label fw-semibold" style="color: #7A6B6E;">Số điện thoại</label>
+                            <input asp-for="Input.PhoneNumber" class="form-control form-control-bakery" placeholder="Nhập số điện thoại của bạn" />
+                            <span asp-validation-for="Input.PhoneNumber" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold" style="color: #7A6B6E;">Họ và Tên</label>
+                            <input name="Input.FullName" value="@Model.Input.FullName" class="form-control form-control-bakery" placeholder="Nhập đầy đủ họ và tên" />
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold" style="color: #7A6B6E;">Địa chỉ giao bánh mặc định</label>
+                            <input name="Input.Address" value="@Model.Input.Address" class="form-control form-control-bakery" placeholder="Số nhà, tên đường, quận/huyện..." />
+                        </div>
+                    </div>
+
+                    <div class="text-end mt-4">
+                        <button id="update-profile-button" type="submit" class="btn btn-save-profile shadow-sm">
+                            <i class="fa-regular fa-circle-check me-1"></i> Lưu thay đổi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

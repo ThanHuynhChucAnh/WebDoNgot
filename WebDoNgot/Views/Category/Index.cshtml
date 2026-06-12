@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<WebDoNgot.Models.Category>
 
 @{
-    ViewData["Title"] = "Quản lý Danh mục";
+    ViewData["Title"] = "Quản lý Danh mục - Tiệm Bánh Ngọt";
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -137,7 +137,6 @@
         color: var(--text-dark);
     }
 
-    /* Nút hành động sửa xóa nhỏ gọn */
     .btn-action {
         padding: 6px 16px;
         border-radius: 10px;
@@ -176,58 +175,78 @@
     <div class="row">
         <div class="col-md-3 col-lg-2 sidebar border-end">
             <ul class="sidebar-menu">
-                <li class="sidebar-item">
-                    <a asp-controller="Product" asp-action="Index"><i class="fa-solid fa-chart-pie"></i> Sản phẩm</a>
-                </li>
                 <li class="sidebar-item active">
-                    <a asp-controller="Category" asp-action="Index"><i class="fa-solid fa-box"></i> Danh mục</a>
+                    <a asp-controller="Product" asp-action="Index">
+                        <i class="fa-solid fa-chart-pie"></i> Sản phẩm
+                    </a>
                 </li>
+    
+                @* Thêm đoạn check ẩn bằng C# phối hợp *@
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="sidebar-item">
+                        <a asp-controller="Category" asp-action="Index">
+                            <i class="fa-solid fa-box"></i> Danh mục
+                        </a>
+                    </li>
+                }
             </ul>
         </div>
 
-        <div class="col-md-9 col-lg-10 main-content">
-            <div class="d-flex justify-content-between align-items-center page-header">
-                <div>
-                    <h2 class="card-title-bakery m-0">Danh mục sản phẩm</h2>
-                    <p class="text-muted m-0 mt-1" style="font-size: 0.9rem;">Phân loại cấu trúc menu các nhóm bánh ngọt của hệ thống.</p>
+        @if (User.IsInRole(SD.Role_Admin))
+        {
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="d-flex justify-content-between align-items-center page-header">
+                    <div>
+                        <h2 class="card-title-bakery m-0">Danh mục sản phẩm</h2>
+                        <p class="text-muted m-0 mt-1" style="font-size: 0.9rem;">Phân loại cấu trúc menu các nhóm bánh ngọt của hệ thống.</p>
+                    </div>
+                    <a asp-action="Add" class="btn btn-bakery-primary shadow-sm">
+                        <i class="fa-solid fa-plus"></i> Thêm danh mục
+                    </a>
                 </div>
-                <a asp-action="Add" class="btn btn-bakery-primary shadow-sm">
-                    <i class="fa-solid fa-plus"></i> Thêm danh mục
-                </a>
-            </div>
 
-            <div class="card bakery-table-card">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th class="ps-4" style="width: 15%;">Mã ID</th>
-                                <th style="width: 55%;">Tên danh mục nhóm bánh</th>
-                                <th class="text-center" style="width: 30%;">Hành động xử lý</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
+                <div class="card bakery-table-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
                                 <tr>
-                                    <td class="ps-4 fw-bold text-muted">@item.Id</td>
-                                    <td class="fw-semibold">@item.Name</td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-2">
-                                            <a asp-action="Update" asp-route-id="@item.Id" class="btn-action btn-edit">
-                                                <i class="fa-solid fa-pen-to-square"></i> Sửa
-                                            </a>
-                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action btn-delete">
-                                                <i class="fa-solid fa-trash-can"></i> Xóa
-                                            </a>
-                                        </div>
-                                    </td>
+                                    <th class="ps-4" style="width: 15%;">Mã ID</th>
+                                    <th style="width: 55%;">Tên danh mục nhóm bánh</th>
+                                    <th class="text-center" style="width: 30%;">Hành động xử lý</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="ps-4 fw-bold text-muted">@item.Id</td>
+                                        <td class="fw-semibold">@item.Name</td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <a asp-action="Update" asp-route-id="@item.Id" class="btn-action btn-edit">
+                                                    <i class="fa-solid fa-pen-to-square"></i> Sửa
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action btn-delete">
+                                                    <i class="fa-solid fa-trash-can"></i> Xóa
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="col-md-9 col-lg-10 main-content text-center py-5">
+                <i class="fa-solid fa-lock text-danger display-1 mb-3"></i>
+                <h3>Bạn không có quyền truy cập mục Danh mục này.</h3>
+                <a href="/" class="btn btn-bakery-primary mt-3">Quay về trang chủ</a>
+            </div>
+        }
     </div>
 </div>

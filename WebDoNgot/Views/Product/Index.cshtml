@@ -1,11 +1,11 @@
 ﻿@model IEnumerable<WebDoNgot.Models.Product>
 
 @{
-    ViewData["Title"] = "Quản lý Sản phẩm";
+    ViewData["Title"] = "Cửa hàng Bánh Ngọt";
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
     :root {
@@ -17,7 +17,6 @@
         --text-muted: #8A7A7D;
         --bg-light: #FAF7F5;
         --sidebar-text: #635759;
-        /* Màu sắc mềm mại cho các nút hành động */
         --btn-view-bg: #F0ECE9;
         --btn-edit-bg: #EAE0E2;
         --btn-delete-bg: #FCECEE;
@@ -27,7 +26,7 @@
     body {
         background-color: var(--bg-light);
         color: var(--text-dark);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
     /* Cấu trúc Sidebar */
@@ -84,22 +83,16 @@
         min-height: calc(100vh - 60px);
     }
 
-    .page-header {
-        border-bottom: 2px solid var(--accent-pink);
-        padding-bottom: 15px;
-        margin-bottom: 25px;
-    }
-
     /* KHỐI HERO BANNER LỚN PHÍA TRÊN */
     .bakery-hero-banner {
         position: relative;
         background: linear-gradient(135deg, #F3E6E8 0%, #E3CDD2 100%);
         border-radius: 24px;
         overflow: hidden;
-        min-height: 280px;
+        min-height: 260px;
         display: flex;
         align-items: center;
-        box-shadow: 0 10px 30px rgba(158, 107, 117, 0.08);
+        box-shadow: 0 10px 30px rgba(158, 107, 117, 0.06);
     }
 
     .hero-text-side {
@@ -128,7 +121,6 @@
         text-transform: uppercase;
     }
 
-    /* Ảnh nền Macaron bự tràn lề phải mượt mà */
     .hero-image-side {
         position: absolute;
         right: 0;
@@ -146,15 +138,16 @@
     .btn-bakery-primary {
         background-color: var(--primary-bakery);
         color: white;
-        border-radius: 20px;
-        padding: 10px 24px;
+        border-radius: 12px;
+        padding: 10px 22px;
         border: none;
         font-size: 0.9rem;
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         display: inline-flex;
         align-items: center;
         gap: 8px;
+        text-decoration: none;
     }
 
         .btn-bakery-primary:hover {
@@ -169,23 +162,24 @@
         background: white;
         border: none;
         border-radius: 16px;
-        padding: 18px;
-        box-shadow: 0 4px 15px rgba(158, 107, 117, 0.03);
+        padding: 16px 20px;
+        box-shadow: 0 4px 15px rgba(158, 107, 117, 0.02);
         display: flex;
         align-items: center;
         gap: 15px;
+        border: 1px solid rgba(226, 219, 216, 0.3);
     }
 
     .stat-icon {
-        width: 45px;
-        height: 45px;
+        width: 44px;
+        height: 44px;
         border-radius: 12px;
         background-color: var(--accent-pink);
         color: var(--primary-bakery);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.25rem;
+        font-size: 1.2rem;
     }
 
     /* Lưới sản phẩm dạng thẻ (Card Grid) */
@@ -193,21 +187,24 @@
         background: white;
         border: none;
         border-radius: 20px;
-        box-shadow: 0 4px 20px rgba(158, 107, 117, 0.04);
+        box-shadow: 0 4px 20px rgba(158, 107, 117, 0.03);
         transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
         height: 100%;
         overflow: hidden;
+        border: 1px solid rgba(226, 219, 216, 0.3);
+        display: flex;
+        flex-direction: column;
     }
 
         .product-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 28px rgba(158, 107, 117, 0.12);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(158, 107, 117, 0.1);
         }
 
     .product-img-wrapper {
         position: relative;
-        height: 190px;
-        background-color: var(--accent-pink);
+        height: 200px;
+        background-color: var(--bg-light);
         overflow: hidden;
     }
 
@@ -219,7 +216,7 @@
     }
 
     .product-card:hover .product-img {
-        transform: scale(1.06);
+        transform: scale(1.04);
     }
 
     .category-badge {
@@ -233,77 +230,142 @@
         font-size: 0.75rem;
         font-weight: 700;
         letter-spacing: 0.3px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
+    /* Đồng nhất chiều cao tiêu đề và mô tả để card không bị cao thấp lệch nhau */
     .card-title-bakery {
         font-family: 'Playfair Display', serif;
         font-weight: 700;
         color: var(--text-dark);
+        min-height: 48px; /* Đảm bảo tự động cân bằng kể cả khi tên bánh chỉ có 1 ký tự */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
-    /* Thiết kế khu vực giá tiền tinh tế */
+    .card-text-description {
+        font-size: 0.85rem;
+        height: 42px; /* Fix cứng chiều cao của đoạn mô tả ngắn */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.5;
+    }
+
     .price-container {
-        background-color: rgba(250, 247, 245, 0.8);
-        padding: 6px 12px;
+        background-color: rgba(250, 247, 245, 0.9);
+        padding: 6px 14px;
         border-radius: 10px;
+        display: inline-block;
     }
 
     .price-tag {
         color: var(--primary-bakery);
-        font-weight: 800;
-        font-size: 1.15rem;
+        font-weight: 700;
+        font-size: 1.1rem;
     }
 
-    /* Tinh chỉnh lại các nút hành động (Xem, Sửa, Xóa) */
-    .action-links .btn-action {
-        width: 34px;
-        height: 34px;
+    /* KHỐI NÚT HÀNH ĐỘNG ĐƯỢC THIẾT KẾ LẠI ĐỂ CÂN BẰNG HƠN */
+    .action-container-bakery {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .user-actions {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .admin-actions {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+        border-top: 1px dashed rgba(226, 219, 216, 0.6);
+        padding-top: 8px;
+    }
+
+    /* Định dạng chung của nút mới */
+    .action-container-bakery .btn-action-new {
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        gap: 6px;
         border-radius: 10px;
         border: none;
         font-size: 0.85rem;
-        transition: all 0.2s ease;
+        font-weight: 600;
+        transition: all 0.2s ease-in-out;
         text-decoration: none;
+        height: 38px;
     }
 
-    .btn-view {
+        .action-container-bakery .btn-action-new:hover {
+            transform: translateY(-2px);
+        }
+
+    /* Nút Xem Chi Tiết */
+    .btn-view-new {
         background-color: var(--btn-view-bg);
         color: var(--text-dark);
+        width: 44px; /* Icon vuông nhỏ tinh tế */
+        flex-shrink: 0;
     }
 
-        .btn-view:hover {
+        .btn-view-new:hover {
             background-color: #E2DBD8;
             color: #000;
         }
 
-    .btn-edit {
-        background-color: var(--btn-edit-bg);
-        color: var(--primary-bakery);
+    /* Nút Thêm Vào Giỏ (Nút chính - nổi bật, kéo giãn cân bằng) */
+    .btn-cart-new {
+        background-color: var(--primary-bakery);
+        color: #FFFFFF;
+        flex-grow: 1; /* Chiếm trọn không gian còn lại để tạo độ vững chãi */
+        box-shadow: 0 4px 10px rgba(158, 107, 117, 0.15);
     }
 
-        .btn-edit:hover {
+        .btn-cart-new:hover {
+            background-color: var(--primary-hover);
+            color: #FFFFFF;
+            box-shadow: 0 6px 14px rgba(158, 107, 117, 0.25);
+        }
+
+    /* Nút Sửa (Dành cho Admin) */
+    .btn-edit-new {
+        background-color: var(--btn-edit-bg);
+        color: var(--primary-bakery);
+        flex: 1; /* Chia đôi không gian đều nhau */
+    }
+
+        .btn-edit-new:hover {
             background-color: var(--active-pink-bg);
             color: var(--primary-hover);
         }
 
-    .btn-delete {
+    /* Nút Xóa (Dành cho Admin) */
+    .btn-delete-new {
         background-color: var(--btn-delete-bg);
         color: var(--btn-delete-text);
+        flex: 1; /* Chia đôi không gian đều nhau */
     }
 
-        .btn-delete:hover {
+        .btn-delete-new:hover {
             background-color: #F7D4D9;
             color: #A53B4C;
         }
 
-    /* THIẾT KẾ KHỐI LIÊN HỆ PHÍA DƯỚI (CONTACT FOOTER) */
+    /* Thiết kế khối liên hệ phía dưới */
     .bakery-footer {
         background-color: white;
         border-radius: 24px;
-        box-shadow: 0 4px 20px rgba(158, 107, 117, 0.03);
-        border: 1px solid var(--accent-pink);
+        box-shadow: 0 4px 20px rgba(158, 107, 117, 0.02);
+        border: 1px solid rgba(226, 219, 216, 0.4);
     }
 
     .footer-brand {
@@ -349,6 +411,7 @@
 
 <div class="container-fluid">
     <div class="row">
+        
         <div class="col-md-3 col-lg-2 sidebar border-end">
             <ul class="sidebar-menu">
                 <li class="sidebar-item active">
@@ -357,60 +420,75 @@
                 <li class="sidebar-item">
                     <a asp-controller="Category" asp-action="Index"><i class="fa-solid fa-box"></i>Danh mục</a>
                 </li>
+                <li class="sidebar-item">
+                    <a asp-controller="ShoppingCart" asp-action="OrderHistory"><i class="fa-solid fa-clock-rotate-left"></i>Lịch sử mua hàng</a>
+                </li>
             </ul>
         </div>
 
         <div class="col-md-9 col-lg-10 main-content">
 
-            <div class="bakery-hero-banner p-5 mb-5">
+            <div class="bakery-hero-banner p-5 mb-4">
                 <div class="hero-text-side">
                     <span class="hero-badge mb-2">Bộ Sưu Tập Mùa Xuân</span>
                     <h1 class="hero-title mb-3">Kiệt Tác Trong Từng Chi Tiết</h1>
                     <p class="text-muted mb-4 d-none d-sm-block" style="font-size: 0.95rem; line-height: 1.5;">
                         Trải nghiệm sự tinh tế từ những chiếc bánh ngọt thủ công, nơi kỹ nghệ Pháp truyền thống hòa quyện cùng cảm hứng hiện đại.
                     </p>
-                    <a asp-action="Add" class="btn btn-bakery-primary shadow-sm">
-                        <i class="fa-solid fa-plus"></i> Thêm sản phẩm mới
-                    </a>
+                    @if (User.IsInRole(SD.Role_Admin))
+                    {
+                        <a asp-action="Add" class="btn btn-bakery-primary shadow-sm">
+                            <i class="fa-solid fa-plus"></i> Thêm sản phẩm mới
+                        </a>
+                    }
                 </div>
                 <div class="hero-image-side"></div>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="card-title-bakery m-0" style="font-size: 1.4rem;">Tổng quan</h4>
-            </div>
+            @if (User.IsInRole(SD.Role_Admin))
+            {
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="card-title-bakery m-0" style="font-size: 1.25rem; min-height: auto;">Tổng quan hệ thống</h4>
+                </div>
 
-            <div class="row g-3 mb-5">
-                <div class="col-6 col-sm-3">
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fa-solid fa-cake-candles"></i></div>
-                        <div>
-                            <div class="text-muted small">Tổng sản phẩm</div>
-                            <h4 class="fw-bold m-0 text-dark">@Model.Count()</h4>
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-sm-3">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fa-solid fa-cake-candles"></i></div>
+                            <div>
+                                <div class="text-muted small" style="font-size: 0.8rem;">Tổng sản phẩm</div>
+                                <h4 class="fw-bold m-0 text-dark" style="font-size: 1.25rem;">@Model.Count()</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background-color: #EBF7ED; color: #56A366;"><i class="fa-solid fa-tags"></i></div>
+                            <div>
+                                <div class="text-muted small" style="font-size: 0.8rem;">Danh mục</div>
+                                <h4 class="fw-bold m-0 text-dark" style="font-size: 1.25rem;">@(ViewBag.TotalCategoriesCount ?? 0)</h4>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-sm-3">
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background-color: #EBF7ED; color: #56A366;"><i class="fa-solid fa-tags"></i></div>
-                        <div>
-                            <div class="text-muted small">Danh mục</div>
-                            <h4 class="fw-bold m-0 text-dark">@(ViewBag.TotalCategoriesCount ?? 0)</h4>
-                        </div>
-                    </div>
-                </div>
+            }
+
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h4 class="card-title-bakery m-0" style="font-size: 1.25rem; min-height: auto;">
+                    <i class="fa-solid fa-cookie-bite text-muted me-2"></i>Danh mục bánh ngọt
+                </h4>
             </div>
 
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
-                @if (!Model.Any())
-                {
-                    <div class="col-12 text-center py-5">
-                        <div class="text-muted mb-3"><i class="fa-regular fa-folder-open fa-3x"></i></div>
-                        <p class="text-muted">Không tìm thấy món bánh nào phù hợp.</p>
-                    </div>
-                }
-                else
-                {
+            @if (!Model.Any())
+            {
+                <div class="col-12 text-center py-5">
+                    <div class="text-muted mb-3"><i class="fa-regular fa-folder-open fa-3x"></i></div>
+                    <p class="text-muted">Không tìm thấy món bánh nào phù hợp.</p>
+                </div>
+            }
+            else
+            {
+                <div id="layoutGrid" class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
                     @foreach (var product in Model)
                     {
                         <div class="col">
@@ -422,42 +500,56 @@
                                     }
                                     else
                                     {
-                                        <div class="d-flex align-items-center justify-content-center h-100 text-muted" style="font-size: 0.85rem;">
-                                            <i class="fa-regular fa-image me-1"></i> Không có ảnh
+                                        <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted bg-white" style="font-size: 0.85rem;">
+                                            <i class="fa-solid fa-ice-cream fa-2x mb-1" style="color: var(--active-pink-bg);"></i>
+                                            <span class="small text-muted">Chưa có hình ảnh</span>
                                         </div>
                                     }
-                                    <span class="category-badge shadow-sm">@(product.Category?.Name ?? "Bánh")</span>
+                                    <span class="category-badge shadow-sm">@(product.Category?.Name ?? "Món ngọt")</span>
                                 </div>
 
                                 <div class="card-body d-flex flex-column p-3">
-                                    <h5 class="card-title-bakery text-truncate mb-1" style="font-size: 1.05rem;" title="@product.Name">@product.Name</h5>
-                                    <p class="card-text text-muted mb-3" style="font-size: 0.85rem; height: 38px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3;">
+                                    <h5 class="card-title-bakery mb-1" style="font-size: 1.05rem;" title="@product.Name">@product.Name</h5>
+                                    <p class="card-text-description text-muted mb-3" title="@product.Description">
                                         @product.Description
                                     </p>
 
-                                    <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
+                                    <div class="mb-3">
                                         <div class="price-container">
                                             <span class="price-tag">@(product.Price.ToString("#,##0"))đ</span>
                                         </div>
-
-                                        <div class="action-links d-flex gap-1">
-                                            <a asp-action="Display" asp-route-id="@product.Id" class="btn-action btn-view" title="Xem chi tiết">
+                                    </div>
+                                    
+                                    <div class="action-container-bakery mt-auto">
+                                        <div class="user-actions">
+                                            <a asp-action="Display" asp-route-id="@product.Id" class="btn-action-new btn-view-new" title="Xem chi tiết">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
-                                            <a asp-action="Update" asp-route-id="@product.Id" class="btn-action btn-edit" title="Chỉnh sửa">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                            </a>
-                                            <a asp-action="Delete" asp-route-id="@product.Id" class="btn-action btn-delete" title="Xóa sản phẩm">
-                                                <i class="fa-solid fa-trash-can"></i>
+                                            
+                                            <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="@product.Id" class="btn-action-new btn-cart-new">
+                                                <i class="fa-solid fa-cart-shopping"></i> Mua ngay
                                             </a>
                                         </div>
+
+                                        @if (User.IsInRole(SD.Role_Admin))
+                                        {
+                                            <div class="admin-actions">
+                                                <a asp-action="Update" asp-route-id="@product.Id" class="btn-action-new btn-edit-new" title="Chỉnh sửa">
+                                                    <i class="fa-solid fa-pen"></i> Sửa
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@product.Id" class="btn-action-new btn-delete-new" title="Xóa sản phẩm">
+                                                    <i class="fa-solid fa-trash-can"></i> Xóa
+                                                </a>
+                                            </div>
+                                        }
                                     </div>
+
                                 </div>
                             </div>
                         </div>
                     }
-                }
-            </div>
+                </div>
+            }
 
             <footer class="bakery-footer p-4 mt-auto">
                 <div class="row align-items-center gy-3">
@@ -486,7 +578,7 @@
                     </div>
 
                     <div class="col-md-3 text-center text-md-end">
-                        <div class="mb-2 text-muted small fw-bold text-uppercase">Kết nối với chúng tôi</div>
+                        <div class="mb-2 text-muted small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Kết nối với chúng tôi</div>
                         <div class="social-links d-flex gap-2 justify-content-center justify-content-md-end">
                             <a href="#" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
                             <a href="#" title="Instagram"><i class="fa-brands fa-instagram"></i></a>

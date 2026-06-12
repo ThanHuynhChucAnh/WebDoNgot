@@ -1,14 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WebDoNgot.Models;
+using WebDoNgot.Repositories;
 
 namespace WebDoNgot.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly IProductRepository _productRepository;
+
+        public HomeController(IProductRepository productRepository)
         {
-            return View();
+            _productRepository = productRepository;
+        }
+
+        // Hiển thị danh sách sản phẩm
+        public async Task<IActionResult> Index()
+        {
+            var products = await _productRepository.GetAllAsync();
+            return View(products);
         }
 
         public IActionResult Privacy()

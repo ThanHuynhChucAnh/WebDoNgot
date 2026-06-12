@@ -1,0 +1,355 @@
+﻿@model WebDoNgot.Models.ShoppingCart
+
+@{
+    ViewData["Title"] = "Giỏ hàng";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --primary-bakery: #9E6B75;
+        --primary-hover: #855660;
+        --accent-pink: #F7EBEF;
+        --active-pink-bg: #E8C5CC;
+        --text-dark: #4A3E41;
+        --text-muted: #8A7A7D;
+        --bg-light: #FAF7F5;
+    }
+
+    body {
+        background-color: #FCF9F7;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: var(--text-dark);
+    }
+
+    .cart-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--text-dark);
+        font-size: 2rem;
+    }
+
+    /* Thẻ bọc danh sách giỏ hàng */
+    .bakery-cart-card {
+        background: #FFFFFF;
+        border: none;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(158, 107, 117, 0.04);
+        border: 1px solid rgba(226, 219, 216, 0.4);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+
+    /* Định dạng lại Table */
+    .bakery-cart-table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+        .bakery-cart-table thead th {
+            background-color: var(--bg-light) !important;
+            color: var(--text-dark) !important;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.82rem;
+            letter-spacing: 0.5px;
+            padding: 16px;
+            border-bottom: 2px solid var(--accent-pink) !important;
+            border-top: none !important;
+        }
+
+        .bakery-cart-table tbody td {
+            padding: 20px 16px;
+            border-bottom: 1px solid #F2EAE7 !important;
+        }
+
+    /* Ảnh sản phẩm nhỏ trong giỏ hàng */
+    .cart-img-box {
+        width: 70px;
+        height: 70px;
+        background-color: var(--bg-light);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: 1px solid rgba(226, 219, 216, 0.3);
+    }
+
+    .cart-img-placeholder {
+        font-size: 1.8rem;
+        color: var(--active-pink-bg);
+    }
+
+    /* Ô input số lượng tinh chỉnh */
+    .cart-qty-input {
+        max-width: 70px;
+        text-align: center;
+        border: 1.5px solid #E2DBD8 !important;
+        border-radius: 10px !important; /* Đổi thành bo tròn đều 4 góc do không dùng nút bấm phụ ghép bên cạnh */
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+        .cart-qty-input:focus {
+            border-color: var(--primary-bakery) !important;
+            box-shadow: none !important;
+        }
+
+    /* Nút xóa sản phẩm khỏi giỏ */
+    .btn-cart-remove {
+        color: #DC3545;
+        background: transparent;
+        border: none;
+        padding: 6px 12px;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+
+        .btn-cart-remove:hover {
+            color: #BD2130;
+            transform: scale(1.1);
+        }
+
+    /* Khu vực thanh toán khối tổng tiền */
+    .cart-summary-box {
+        background-color: var(--bg-light);
+        border-radius: 16px;
+        padding: 24px;
+        display: inline-block;
+        min-width: 320px;
+        border: 1px solid rgba(226, 219, 216, 0.4);
+    }
+
+    .total-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--text-dark);
+    }
+
+    .total-amount {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--primary-bakery);
+    }
+
+    /* Các nút hành động chính */
+    .btn-bakery-checkout {
+        background-color: var(--primary-bakery);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 28px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-bakery-checkout:hover {
+            background-color: var(--primary-hover);
+            color: #FFFFFF;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(158, 107, 117, 0.2);
+        }
+
+    .btn-bakery-clear {
+        background-color: transparent;
+        color: var(--text-muted);
+        border: 1.5px solid #E2DBD8;
+        border-radius: 12px;
+        padding: 11px 24px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .btn-bakery-clear:hover {
+            background-color: #FFF2F4;
+            color: #DC3545;
+            border-color: #FFDFE2;
+        }
+
+    /* Khối giỏ hàng trống rỗng */
+    .empty-cart-box {
+        background: #FFFFFF;
+        border-radius: 24px;
+        padding: 60px;
+        text-align: center;
+        box-shadow: 0 6px 24px rgba(158, 107, 117, 0.02);
+        border: 1px solid rgba(226, 219, 216, 0.4);
+    }
+</style>
+
+<div class="container py-5">
+    
+    <div class="mb-4">
+        <h2 class="cart-title mb-1"><i class="fa-solid fa-basket-shopping text-muted me-2"></i>Giỏ hàng của bạn</h2>
+        <p class="text-muted small">Kiểm tra lại danh sách bánh ngọt bạn đã chọn trước khi tiến hành đặt hàng.</p>
+    </div>
+
+    @if (Model == null || !Model.Items.Any())
+    {
+        <div class="empty-cart-box">
+            <div class="text-muted mb-3" style="font-size: 4rem; color: var(--active-pink-bg) !important;">
+                <i class="fa-solid fa-cookie-bite"></i>
+            </div>
+            <h4 class="fw-bold text-dark mb-2" style="font-family: 'Playfair Display', serif;">Giỏ hàng đang trống rỗng</h4>
+            <p class="text-muted small mb-4">Hương vị ngọt ngào đang chờ đợi bạn! Hãy chọn cho mình những món bánh yêu thích nhé.</p>
+            <a asp-controller="Product" asp-action="Index" class="btn btn-bakery-checkout">
+                <i class="fa-solid fa-arrow-left-long"></i> Tiếp tục chọn bánh
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="card bakery-cart-card">
+            <div class="table-responsive">
+                <table class="table align-middle bakery-cart-table mb-0">
+                    <thead>
+                        <tr>
+                            <th width="100">Hình ảnh</th>
+                            <th>Sản phẩm</th>
+                            <th width="140">Đơn giá</th>
+                            <th width="180">Số lượng</th>
+                            <th width="150">Thành tiền</th>
+                            <th width="90" class="text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="cart-img-box">
+                                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                        {
+                                            <img src="@item.ImageUrl" alt="@item.Name" style="width: 100%; height: 100%; object-fit: cover;" />
+                                        }
+                                        else
+                                        {
+                                            <div class="cart-img-placeholder">
+                                                <i class="fa-solid fa-ice-cream"></i>
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="fw-bold text-dark d-block" style="font-size: 1rem;">@item.Name</span>
+                                    <span class="text-muted xs-small">Món ngọt Premium</span>
+                                </td>
+
+                                <td class="fw-semibold text-secondary">
+                                    @item.Price.ToString("N0") <span class="small text-muted">đ</span>
+                                </td>
+
+                                <td>
+                                    @* Thay đổi form sang cơ chế bắt sự kiện AJAX qua class .cart-qty-input *@
+                                    <div class="input-group input-group-sm" style="max-width: 140px;">
+                                        <input type="number"
+                                               value="@item.Quantity"
+                                               min="1"
+                                               data-product-id="@item.ProductId"
+                                               class="form-control cart-qty-input txt-quantity" />
+                                    </div>
+                                </td>
+
+                                @* Thêm class và attribute data-product-id để JavaScript cập nhật giá trị vùng này *@
+                                <td class="fw-bold item-line-total" data-product-id="@item.ProductId" style="color: var(--primary-bakery);">
+                                    @((item.Price * item.Quantity).ToString("N0")) <span class="small font-weight-normal text-muted">đ</span>
+                                </td>
+
+                                <td class="text-center">
+                                    <a asp-action="RemoveFromCart" asp-route-productId="@item.ProductId" class="btn-cart-remove" title="Xóa món này khỏi giỏ">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-4 mt-2">
+            
+            <div class="d-flex flex-wrap gap-2">
+                <a asp-controller="Product" asp-action="Index" class="btn btn-bakery-clear" style="color: var(--primary-bakery);">
+                    <i class="fa-solid fa-arrow-left"></i> Thêm món khác
+                </a>
+                <a asp-action="ClearCart" class="btn btn-bakery-clear">
+                    <i class="fa-regular fa-circle-xmark"></i> Xóa toàn bộ giỏ
+                </a>
+            </div>
+
+            <div class="text-end w-100 w-md-auto">
+                <div class="card cart-summary-box shadow-sm mb-3 text-start">
+                    <div class="d-flex justify-content-between align-items-center gap-5">
+                        <span class="total-title"><i class="fa-solid fa-receipt me-1 text-muted"></i> Tổng tiền thanh toán:</span>
+                        @* Thêm ID để JavaScript có thể ghi đè lại Tổng tiền mới tính toán được *@
+                        <span class="total-amount" id="cart-total-amount">@Model.GetTotal().ToString("N0") <span class="fs-6 fw-normal text-muted">đ</span></span>
+                    </div>
+                </div>
+                <div class="d-block">
+                    <a asp-action="Checkout" class="btn btn-bakery-checkout shadow-sm px-5 py-3">
+                        Tiến hành đặt hàng <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    }
+</div>
+
+@* Khối mã Script bắt sự kiện real-time *@
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+        // Lắng nghe sự kiện thay đổi giá trị số lượng
+        $('.txt-quantity').on('change input', function () {
+        var input = $(this);
+        var pId = input.data('product-id');
+        var qty = parseInt(input.val());
+
+        // Ràng buộc điều kiện số lượng luôn lớn hơn hoặc bằng 1
+        if (isNaN(qty) || qty < 1) {
+        qty = 1;
+        input.val(1);
+        }
+
+        // Thực hiện gọi ngầm AJAX về Action UpdateQuantity trong ShoppingCartController
+        $.ajax({
+        url: '@Url.Action("UpdateQuantity", "ShoppingCart")',
+        type: 'POST',
+        data: {
+        productId: pId,
+        quantity: qty
+        },
+        success: function (response) {
+        if (response.success) {
+        // Cập nhật lại thành tiền của dòng sản phẩm tương ứng
+        $('.item-line-total[data-product-id="' + pId + '"]').html(response.lineTotal);
+        // Cập nhật lại tổng tiền thanh toán cuối cùng của cả giỏ hàng
+        $('#cart-total-amount').html(response.cartTotal);
+        }
+        },
+        error: function () {
+        console.log("Đã xảy ra lỗi trong quá trình cập nhật số lượng món ăn.");
+        }
+        });
+        });
+        });
+    </script>
+}

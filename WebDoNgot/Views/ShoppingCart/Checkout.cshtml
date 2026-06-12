@@ -1,0 +1,240 @@
+﻿@model WebDoNgot.Models.Order
+
+@{
+    ViewData["Title"] = "Thanh toán";
+    var cart = ViewBag.Cart as WebDoNgot.Models.ShoppingCart;
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --primary-bakery: #9E6B75;
+        --primary-hover: #855660;
+        --accent-pink: #F7EBEF;
+        --active-pink-bg: #E8C5CC;
+        --text-dark: #4A3E41;
+        --text-muted: #8A7A7D;
+        --bg-light: #FAF7F5;
+    }
+
+    body {
+        background-color: #FCF9F7;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: var(--text-dark);
+    }
+
+    .checkout-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--text-dark);
+        font-size: 2rem;
+    }
+
+    /* Khung Card thông tin giao hàng */
+    .checkout-form-card {
+        background: #FFFFFF;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(158, 107, 117, 0.04);
+        border: 1px solid rgba(226, 219, 216, 0.4);
+        padding: 35px;
+    }
+
+    .form-section-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--text-dark);
+        border-bottom: 2px solid var(--accent-pink);
+        padding-bottom: 10px;
+    }
+
+    /* Tinh chỉnh Ô nhập liệu đầu vào */
+    .bakery-input-group .form-control {
+        border: 1.5px solid #E2DBD8;
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        color: var(--text-dark);
+        font-size: 0.95rem;
+        transition: all 0.2s ease-in-out;
+        background-color: #FFFDFD;
+    }
+
+    .bakery-input-group .form-control:focus {
+        border-color: var(--primary-bakery);
+        box-shadow: 0 0 0 4px rgba(158, 107, 117, 0.1);
+        background-color: #FFFFFF;
+    }
+
+    .bakery-input-group .form-label {
+        font-weight: 600;
+        color: #5C4D50;
+        font-size: 0.9rem;
+    }
+
+    /* Nút Đặt hàng chính */
+    .btn-bakery-checkout {
+        background-color: var(--primary-bakery);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        font-weight: 600;
+        font-size: 1.05rem;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-bakery-checkout:hover {
+        background-color: var(--primary-hover);
+        color: #FFFFFF;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(158, 107, 117, 0.2);
+    }
+
+    /* Tóm tắt đơn hàng bên phải (Biên lai tiệm bánh) */
+    .order-summary-card {
+        background: #FFFFFF;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(158, 107, 117, 0.04);
+        border: 1px solid rgba(226, 219, 216, 0.4);
+        overflow: hidden;
+    }
+
+    .order-summary-card .card-header {
+        background-color: var(--bg-light);
+        border-bottom: 1px solid rgba(226, 219, 216, 0.6);
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--text-dark);
+        font-size: 1.15rem;
+        padding: 18px 20px;
+    }
+
+    .order-summary-card .card-body {
+        padding: 22px;
+    }
+
+    .summary-item-row {
+        padding: 10px 0;
+        font-size: 0.95rem;
+        border-bottom: 1px dashed #F2EAE7;
+    }
+    .summary-item-row:last-of-type {
+        border-bottom: none;
+    }
+
+    .summary-item-name {
+        color: var(--text-dark);
+        font-weight: 500;
+    }
+
+    .summary-item-price {
+        color: #5C4D50;
+        font-weight: 600;
+    }
+
+    .total-price-box {
+        background-color: var(--accent-pink);
+        border-radius: 12px;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+
+<div class="container py-5">
+
+    <div class="mb-4">
+        <h2 class="checkout-title mb-1"><i class="fa-regular fa-credit-card me-2 text-muted"></i>Thanh toán đơn hàng</h2>
+        <p class="text-muted small">Vui lòng điền thông tin nhận bánh và kiểm tra lại giỏ hàng của bạn.</p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-lg-8">
+            <div class="card checkout-form-card">
+                <form asp-action="Checkout" method="post">
+                    
+                    <h4 class="form-section-title mb-4"><i class="fa-solid fa-truck-ramp-box me-2"></i>Thông tin nhận hàng</h4>
+
+                    <div class="mb-4 bakery-input-group">
+                        <label class="form-label"><i class="fa-solid fa-location-dot me-1 text-muted"></i> Địa chỉ giao hàng</label>
+                        <input asp-for="ShippingAddress" class="form-control" placeholder="Nhập số nhà, tên đường, quận/huyện..." />
+                        <span asp-validation-for="ShippingAddress" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <div class="mb-4 bakery-input-group">
+                        <label class="form-label"><i class="fa-regular fa-comment-dots me-1 text-muted"></i> Ghi chú đơn hàng (Tùy chọn)</label>
+                        <textarea asp-for="Notes" class="form-control" rows="4" placeholder="Ví dụ: Giao giờ hành chính, bánh ít ngọt, viết chữ lên bánh..."></textarea>
+                    </div>
+
+                    <div class="d-grid mt-2">
+                        <button type="submit" class="w-100 btn btn-bakery-checkout shadow-sm">
+                            Xác nhận đặt hàng <i class="fa-solid fa-circle-check"></i>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card order-summary-card">
+                <div class="card-header">
+                    <i class="fa-solid fa-receipt me-1 text-muted"></i> Tóm tắt đơn hàng
+                </div>
+
+                <div class="card-body">
+                    @if (cart != null && cart.Items != null && cart.Items.Any())
+                    {
+                        <div class="mb-4">
+                            @foreach (var item in cart.Items)
+                            {
+                                <div class="d-flex justify-content-between align-items-center summary-item-row">
+                                    <span class="summary-item-name">
+                                        @item.Name <span class="text-muted small">x @item.Quantity</span>
+                                    </span>
+                                    <span class="summary-item-price">
+                                        @((item.Price * item.Quantity).ToString("N0")) đ
+                                    </span>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="total-price-box mt-3">
+                            <h5 class="mb-0 fw-bold text-dark" style="font-family: 'Playfair Display', serif;">Tổng cộng:</h5>
+                            <h4 class="mb-0 fw-bold" style="color: var(--primary-bakery); font-size: 1.4rem;">
+                                @cart.GetTotal().ToString("N0") <span class="fs-6 fw-semibold text-muted">đ</span>
+                            </h4>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-3 my-0 small">Giỏ hàng của bạn đang trống.</p>
+                    }
+                </div>
+            </div>
+            
+            <div class="text-center mt-3">
+                <a asp-controller="Product" asp-action="Index" class="text-decoration-none small text-muted" style="font-weight: 500;">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Tiếp tục mua bánh
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
